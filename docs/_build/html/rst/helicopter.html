@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Helicopter &mdash; Preliminary Design  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Landing Gear" href="landing_gear.html" />
+    <link rel="prev" title="Fuselage" href="fuselage.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Preliminary Design
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="input.html">Input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structure.html">Structure</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="aircraft.html">Aircraft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engines.html">Engines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fuselage.html">Fuselage</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Helicopter</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sizing-loop">Sizing loop</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="landing_gear.html">Landing Gear</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mission.html">Mission</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rotor.html">Rotor</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ressources.html">Ressources</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Preliminary Design</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">Modules</a> &raquo;</li>
+      <li>Helicopter</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/rst/helicopter.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="helicopter">
+<h1>Helicopter<a class="headerlink" href="#helicopter" title="Permalink to this headline"></a></h1>
+<section id="sizing-loop">
+<h2>Sizing loop<a class="headerlink" href="#sizing-loop" title="Permalink to this headline"></a></h2>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/sizing_loop.png"><img alt="../_images/sizing_loop.png" src="../_images/sizing_loop.png" style="width: 350px;" /></a>
+</figure>
+<span class="target" id="module-helicopter"></span><dl class="py class">
+<dt class="sig sig-object py" id="helicopter.Helicopter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">helicopter.</span></span><span class="sig-name descname"><span class="pre">Helicopter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helicopter.Helicopter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="aircraft.html#aircraft.Aircraft" title="aircraft.Aircraft"><code class="xref py py-class docutils literal notranslate"><span class="pre">aircraft.Aircraft</span></code></a></p>
+<p>Aircraft sub-class for conventional helicopter configurations containing
+methods for preliminary design and analysis.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Requires <em>Main rotor</em>, <em>Tail rotor</em>, <em>Engines</em>, <em>Fuselage</em>, and
+<em>Landing Gear</em> section in the configuration file.</p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="helicopter.Helicopter.main_rotor">
+<span class="sig-name descname"><span class="pre">main_rotor</span></span><a class="headerlink" href="#helicopter.Helicopter.main_rotor" title="Permalink to this definition"></a></dt>
+<dd><p>Main rotor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="rotor.html#rotor.Rotor" title="rotor.Rotor">Rotor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="helicopter.Helicopter.tail_rotor">
+<span class="sig-name descname"><span class="pre">tail_rotor</span></span><a class="headerlink" href="#helicopter.Helicopter.tail_rotor" title="Permalink to this definition"></a></dt>
+<dd><p>Tail rotor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="rotor.html#rotor.Rotor" title="rotor.Rotor">Rotor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="helicopter.Helicopter.engines">
+<span class="sig-name descname"><span class="pre">engines</span></span><a class="headerlink" href="#helicopter.Helicopter.engines" title="Permalink to this definition"></a></dt>
+<dd><p>Turboshaft engines.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="engines.html#engines.Engines" title="engines.Engines">Engines</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="helicopter.Helicopter.fuselage">
+<span class="sig-name descname"><span class="pre">fuselage</span></span><a class="headerlink" href="#helicopter.Helicopter.fuselage" title="Permalink to this definition"></a></dt>
+<dd><p>Fuselage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="fuselage.html#fuselage.Fuselage" title="fuselage.Fuselage">Fuselage</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="helicopter.Helicopter.landing_gear">
+<span class="sig-name descname"><span class="pre">landing_gear</span></span><a class="headerlink" href="#helicopter.Helicopter.landing_gear" title="Permalink to this definition"></a></dt>
+<dd><p>Landing Gear.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="landing_gear.html#landing_gear.LandingGear" title="landing_gear.LandingGear">LandingGear</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helicopter.Helicopter.empty_weight_estimation">
+<span class="sig-name descname"><span class="pre">empty_weight_estimation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fuel_mass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helicopter.Helicopter.empty_weight_estimation" title="Permalink to this definition"></a></dt>
+<dd><p>Estimate the empty weight components of medium helicopters.
+[pp.408-416]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fuel_mass</strong> (<em>float</em>) – Fuel mass; kg, used for fuel tank sizing.</p></li>
+<li><p><strong>power</strong> (<em>float</em>) – Total power; W, used for propulsion system and instrument sizing.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dictionary containing the empty weight components main rotor, tail
+rotor, fuselage and tail, landing gear, transmission, engines, fuel
+tanks, flight control systems, hydraulic systems, avionics,
+instruments, furnishing, air conditioning and anti-ice, loading and
+handling, and electrical systems. The sum represents the total
+empty weight.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helicopter.Helicopter.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mission.html#mission.Mission" title="mission.Mission"><span class="pre">mission.Mission</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helicopter.Helicopter.evaluate" title="Permalink to this definition"></a></dt>
+<dd><p>Evaluate the flight state, powers, and performance throughout the
+mission for a fixed configuration. For each segment, the Gross Weight
+at the beginning of it is assumed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mission</strong> (<a class="reference internal" href="mission.html#mission.Mission" title="mission.Mission"><em>Mission</em></a>) – Mission profile.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dictionary containing lists of the flight state, power composition,
+performance, fuel mass, and gross weight throughout the mission.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helicopter.Helicopter.flight_state">
+<span class="sig-name descname"><span class="pre">flight_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gross_weight</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gravity</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helicopter.Helicopter.flight_state" title="Permalink to this definition"></a></dt>
+<dd><p>Determine flight state variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gross_weight</strong> (<em>float</em>) – Aircraft mass; kg</p></li>
+<li><p><strong>density</strong> (<em>float</em>) – Density of the surrounding air; kg/m³</p></li>
+<li><p><strong>velocity</strong> (<em>float</em>) – Flight speed; m/s</p></li>
+<li><p><strong>gamma</strong> (<em>float</em>) – Climb angle; rad</p></li>
+<li><p><strong>gravity</strong> (<em>float</em>) – Gravitational acceleration; m/s²</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dictionary containing the density, velocity, climb angle, advance
+ratio, drag, angle of attack, thrust, induced velocity, download
+factor, blade loading, gravity, and gross weight.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helicopter.Helicopter.initial_mtow_estimation">
+<span class="sig-name descname"><span class="pre">initial_mtow_estimation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">payload</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crew_mass</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helicopter.Helicopter.initial_mtow_estimation" title="Permalink to this definition"></a></dt>
+<dd><p>Estimate the initial maximum take-off weight based on the installed
+power and total duration. Specific fuel consumption and empty weight
+ratio are assumed constant. [pp.90-91]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>duration</strong> (<em>float</em>) – Mission duration; h</p></li>
+<li><p><strong>payload</strong> (<em>float</em>) – Payload; kg</p></li>
+<li><p><strong>crew_mass</strong> (<em>float</em>) – Crew mass; kg</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helicopter.Helicopter.mass_estimation">
+<span class="sig-name descname"><span class="pre">mass_estimation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">power</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fuel_mass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crew_mass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">payload</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_ew_models</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helicopter.Helicopter.mass_estimation" title="Permalink to this definition"></a></dt>
+<dd><p>Determine the maximum take-off weight composition.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>power</strong> (<em>float</em>) – Power; W</p></li>
+<li><p><strong>fuel_mass</strong> (<em>float</em>) – Fuel mass; kg</p></li>
+<li><p><strong>crew_mass</strong> (<em>float</em>) – Crew mass; kg</p></li>
+<li><p><strong>payload</strong> (<em>float</em>) – Payload; kg</p></li>
+<li><p><strong>use_ew_models</strong> (<em>bool</em>) – Use empirical empty weight models, otherwise the ratio to the
+maximum take-off weight is assumed constant.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dictionary containing the empty weight, fuel, payload, and crew
+mass. The sum represents the maximum take-off weight.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helicopter.Helicopter.performance">
+<span class="sig-name descname"><span class="pre">performance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">powers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helicopter.Helicopter.performance" title="Permalink to this definition"></a></dt>
+<dd><p>Determine performance parameters aside from the individual power
+components.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>powers</strong> (<em>dict</em>) – Output of <a class="reference internal" href="#helicopter.Helicopter.powers" title="helicopter.Helicopter.powers"><code class="xref py py-meth docutils literal notranslate"><span class="pre">powers()</span></code></a>.</p></li>
+<li><p><strong>temperature</strong> (<em>float</em>) – Temperature of the surrounding air; K</p></li>
+<li><p><strong>pressure</strong> (<em>float</em>) – Pressure of the surrounding air; Pa</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dictionary containing the total power, the power requirement at
+mean sea level, specific fuel consumption, and the fuel mass flow.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helicopter.Helicopter.plot_blade_loading">
+<span class="sig-name descname"><span class="pre">plot_blade_loading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blade_loading</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">advance_ratio</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helicopter.Helicopter.plot_blade_loading" title="Permalink to this definition"></a></dt>
+<dd><p>Plot the blade loading over the advance ratio, in order to evaluate
+the stall margin. [p.142]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>blade_loading</strong> (<em>float</em>) – Blade loading.</p></li>
+<li><p><strong>advance_ratio</strong> (<em>float</em>) – Advance ratio.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helicopter.Helicopter.plot_empty_weight_pie">
+<span class="sig-name descname"><span class="pre">plot_empty_weight_pie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">empty_weight_parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helicopter.Helicopter.plot_empty_weight_pie" title="Permalink to this definition"></a></dt>
+<dd><p>Plot the empty weight composition as a pie chart.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>empty_weight_parts</strong> (<em>dict</em>) – Output of <a class="reference internal" href="#helicopter.Helicopter.empty_weight_estimation" title="helicopter.Helicopter.empty_weight_estimation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">empty_weight_estimation()</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helicopter.Helicopter.plot_fuel_curve">
+<span class="sig-name descname"><span class="pre">plot_fuel_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gross_weight</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_velocity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helicopter.Helicopter.plot_fuel_curve" title="Permalink to this definition"></a></dt>
+<dd><p>Plot the fuel mass flow and total power over a range of horizontal
+flight speeds. Annotations show the velocities for best range and
+endurance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gross_weight</strong> (<em>float</em>) – Aircraft mass; kg</p></li>
+<li><p><strong>density</strong> (<em>float</em>) – Density of the surrounding air; kg/m³</p></li>
+<li><p><strong>temperature</strong> (<em>float</em>) – Temperature of the surrounding air; K</p></li>
+<li><p><strong>pressure</strong> (<em>float</em>) – Pressure of the surrounding air; Pa</p></li>
+<li><p><strong>max_velocity</strong> (<em>float</em><em>, </em><em>optional</em>) – Upper limit for the forward flight speed to be considered in the
+plot. If not provided, the limit is defined by the installed power.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helicopter.Helicopter.plot_gross_weight_over_time">
+<span class="sig-name descname"><span class="pre">plot_gross_weight_over_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mission.html#mission.Mission" title="mission.Mission"><span class="pre">mission.Mission</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fuel_mass_per_segment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helicopter.Helicopter.plot_gross_weight_over_time" title="Permalink to this definition"></a></dt>
+<dd><p>Plot the Gross Weight and fuel flow over the mission duration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mission</strong> (<a class="reference internal" href="mission.html#mission.Mission" title="mission.Mission"><em>Mission</em></a>) – Mission profile.</p></li>
+<li><p><strong>fuel_mass_per_segment</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Fuel demand for each segment; kg</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helicopter.Helicopter.plot_masses_pie">
+<span class="sig-name descname"><span class="pre">plot_masses_pie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">masses</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helicopter.Helicopter.plot_masses_pie" title="Permalink to this definition"></a></dt>
+<dd><p>Plot the maximum take-off weight composition as a pie chart.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>masses</strong> (<em>dict</em>) – Output of <a class="reference internal" href="#helicopter.Helicopter.mass_estimation" title="helicopter.Helicopter.mass_estimation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">mass_estimation()</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helicopter.Helicopter.plot_mtow_convergence">
+<span class="sig-name descname"><span class="pre">plot_mtow_convergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mtow_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helicopter.Helicopter.plot_mtow_convergence" title="Permalink to this definition"></a></dt>
+<dd><p>Plot the maximum take-off weight over the iterations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mtow_list</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – List of the maximum take-off weight; kg</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helicopter.Helicopter.plot_power_curves">
+<span class="sig-name descname"><span class="pre">plot_power_curves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gross_weight</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_velocity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helicopter.Helicopter.plot_power_curves" title="Permalink to this definition"></a></dt>
+<dd><p>Plot the individual power components over a range of horizontal flight
+speeds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gross_weight</strong> (<em>float</em>) – Aircraft mass; kg</p></li>
+<li><p><strong>density</strong> (<em>float</em>) – Density of the surrounding air; kg/m³</p></li>
+<li><p><strong>max_velocity</strong> (<em>float</em><em>, </em><em>optional</em>) – Upper limit for the forward flight speed to be considered in the
+plot. If not provided, the limit is defined by the installed power.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helicopter.Helicopter.plot_power_sweep_drag_area">
+<span class="sig-name descname"><span class="pre">plot_power_sweep_drag_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">drag_area_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gross_weight</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_velocity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helicopter.Helicopter.plot_power_sweep_drag_area" title="Permalink to this definition"></a></dt>
+<dd><p>Plot power curves for a range of drag areas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>drag_area_range</strong> (<em>tuple</em><em>(</em><em>min</em><em>, </em><em>max</em><em>, </em><em>N</em><em>)</em>) – Drag area range; kg</p></li>
+<li><p><strong>gross_weight</strong> (<em>float</em>) – Aircraft mass; kg</p></li>
+<li><p><strong>density</strong> (<em>float</em>) – Density of the surrounding air; kg/m³</p></li>
+<li><p><strong>max_velocity</strong> (<em>float</em><em>, </em><em>optional</em>) – Maximum velocity to be considered in the plot; m/s</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helicopter.Helicopter.plot_power_sweep_gw">
+<span class="sig-name descname"><span class="pre">plot_power_sweep_gw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gw_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_velocity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helicopter.Helicopter.plot_power_sweep_gw" title="Permalink to this definition"></a></dt>
+<dd><p>Plot power curves for a range of Gross Weights.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gw_range</strong> (<em>tuple</em><em>(</em><em>min</em><em>, </em><em>max</em><em>, </em><em>N</em><em>)</em>) – Gross Weight range; kg</p></li>
+<li><p><strong>density</strong> (<em>float</em>) – Density of the surrounding air; kg/m³</p></li>
+<li><p><strong>max_velocity</strong> (<em>float</em><em>, </em><em>optional</em>) – Maximum velocity to be considered in the plot; m/s</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helicopter.Helicopter.plot_power_sweep_height">
+<span class="sig-name descname"><span class="pre">plot_power_sweep_height</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">height_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gross_weight</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_velocity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helicopter.Helicopter.plot_power_sweep_height" title="Permalink to this definition"></a></dt>
+<dd><p>Plot power curves for a range of heights.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>height_range</strong> (<em>tuple</em><em>(</em><em>min</em><em>, </em><em>max</em><em>, </em><em>N</em><em>)</em>) – Height range; kg</p></li>
+<li><p><strong>gross_weight</strong> (<em>float</em>) – Aircraft mass; kg</p></li>
+<li><p><strong>max_velocity</strong> (<em>float</em><em>, </em><em>optional</em>) – Maximum velocity to be considered in the plot; m/s</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helicopter.Helicopter.plot_powers_pie">
+<span class="sig-name descname"><span class="pre">plot_powers_pie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">powers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helicopter.Helicopter.plot_powers_pie" title="Permalink to this definition"></a></dt>
+<dd><p>Plot the power composition as a pie chart.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>powers</strong> (<em>dict</em>) – Output of <a class="reference internal" href="#helicopter.Helicopter.powers" title="helicopter.Helicopter.powers"><code class="xref py py-meth docutils literal notranslate"><span class="pre">powers()</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helicopter.Helicopter.plot_results">
+<span class="sig-name descname"><span class="pre">plot_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helicopter.Helicopter.plot_results" title="Permalink to this definition"></a></dt>
+<dd><p>Plot one of the preliminary design parameters as a 3D surface over
+rotor radius and chord length.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – Output of <a class="reference internal" href="#helicopter.Helicopter.preliminary_design" title="helicopter.Helicopter.preliminary_design"><code class="xref py py-meth docutils literal notranslate"><span class="pre">preliminary_design()</span></code></a>.</p></li>
+<li><p><strong>param</strong> (<em>str</em>) – z-axis parameter, key of <a class="reference internal" href="#helicopter.Helicopter.sizing_loop" title="helicopter.Helicopter.sizing_loop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sizing_loop()</span></code></a> output.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helicopter.Helicopter.powers">
+<span class="sig-name descname"><span class="pre">powers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flight_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helicopter.Helicopter.powers" title="Permalink to this definition"></a></dt>
+<dd><p>Determine the power composition in the current flight state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>flight_state</strong> (<em>dict</em>) – Output of <a class="reference internal" href="#helicopter.Helicopter.flight_state" title="helicopter.Helicopter.flight_state"><code class="xref py py-meth docutils literal notranslate"><span class="pre">flight_state()</span></code></a>.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dictionary containing the induced, profile, climb, parasite, tail
+rotor, and accessory power as well as transmission losses. The sum
+represents the total power.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helicopter.Helicopter.preliminary_design">
+<span class="sig-name descname"><span class="pre">preliminary_design</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mission.html#mission.Mission" title="mission.Mission"><span class="pre">mission.Mission</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chord_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conv_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_ew_models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helicopter.Helicopter.preliminary_design" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a dataframe for given ranges of the rotor radius and chord
+length, containing maximum take-off weight, fuel consumption, and
+other performance parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mission</strong> (<a class="reference internal" href="mission.html#mission.Mission" title="mission.Mission"><em>Mission</em></a>) – Mission profile.</p></li>
+<li><p><strong>radius_range</strong> (<em>tuple</em><em>(</em><em>min</em><em>, </em><em>max</em><em>, </em><em>N</em><em>)</em>) – Range of the rotor radius variation; m</p></li>
+<li><p><strong>chord_range</strong> (<em>tuple</em><em>(</em><em>min</em><em>, </em><em>max</em><em>, </em><em>M</em><em>)</em>) – Range of the chord length variation; m</p></li>
+<li><p><strong>conv_tol</strong> (<em>float</em><em>, </em><em>optional</em>) – Convergence tolerance of the sizing loop.</p></li>
+<li><p><strong>use_ew_models</strong> (<em>bool</em><em>, </em><em>optional</em>) – Use empirical empty weight models, otherwise the ratio to the
+maximum take-off weight is assumed constant.</p></li>
+<li><p><strong>status</strong> (<em>bool</em><em>, </em><em>optional</em>) – Print status updates, default True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dataframe containing the results of <a class="reference internal" href="#helicopter.Helicopter.sizing_loop" title="helicopter.Helicopter.sizing_loop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sizing_loop()</span></code></a> as rows.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helicopter.Helicopter.sizing_loop">
+<span class="sig-name descname"><span class="pre">sizing_loop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mission.html#mission.Mission" title="mission.Mission"><span class="pre">mission.Mission</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">conv_tol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_ew_models</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helicopter.Helicopter.sizing_loop" title="Permalink to this definition"></a></dt>
+<dd><p>Determine the maximum take-off weight and performance iteratively for a
+given mission.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mission</strong> (<a class="reference internal" href="mission.html#mission.Mission" title="mission.Mission"><em>Mission</em></a>) – Mission profile.</p></li>
+<li><p><strong>conv_tol</strong> (<em>float</em>) – Convergence tolerance.</p></li>
+<li><p><strong>use_ew_models</strong> (<em>bool</em>) – Use empirical empty weight models, otherwise the ratio to the
+maximum take-off weight is assumed constant.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dictionary containing the radius, chord length, maximum take-off
+weight, fuel mass, empty weight ratio, solidity, disc loading, and
+blade loading.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="fuselage.html" class="btn btn-neutral float-left" title="Fuselage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="landing_gear.html" class="btn btn-neutral float-right" title="Landing Gear" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fabian Grimm, Sumeet Kumar.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

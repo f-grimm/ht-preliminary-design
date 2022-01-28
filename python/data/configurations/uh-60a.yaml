@@ -1,0 +1,46 @@
+
+Name: Sikorsky UH-60A
+
+Main rotor:
+    
+    Radius: 8.178 # m
+    Number of blades: 4 
+    Chord: 0.527 # m
+    Zero-lift drag coeff.: 0.010
+    Tip velocity: 221 # m/s
+
+Tail rotor:
+
+    Radius: 1.676 # m
+    Number of blades: 4
+    Chord: 0.247 # m
+    Tip velocity: 209 # m/s
+    Power fraction: 0.05
+
+Engines:
+
+    Number of engines: 2
+    Power available: 1_039_995 # W (max. usable, per engine)
+    SFC: 0.000283 # kg/Wh 
+
+Fuselage:
+
+    Drag area: 2.044 # m²
+
+Landing gear:
+
+    Type: Rigid wheels # {Skids, Retractable wheels, Rigid wheels}
+    Number of legs: 3
+
+Misc:
+
+    MTOW: 9979 # kg
+    Accessory power: 48_000 # W
+    Empty weight ratio: 0.4955
+    Number of seats: 8
+
+
+# Sources:
+# Prouty R.W., Helicopter Performance, Stability, and Control, 2002
+# https://www.wikiwand.com/en/General_Electric_T700
+# https://rotorcraft.arc.nasa.gov/Publications/files/Yeo_AHS2002.pdf

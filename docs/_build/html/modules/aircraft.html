@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aircraft &mdash; Preliminary Design  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Engines" href="engines.html" />
+    <link rel="prev" title="Modules" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Preliminary Design
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../input.html">Input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Aircraft</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#thrust-and-angle-of-attack">Thrust and angle of attack</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="engines.html">Engines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fuselage.html">Fuselage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="helicopter.html">Helicopter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="landing_gear.html">Landing Gear</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mission.html">Mission</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rotor.html">Rotor</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ressources.html">Ressources</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Preliminary Design</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">Modules</a> &raquo;</li>
+      <li>Aircraft</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modules/aircraft.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="aircraft">
+<h1>Aircraft<a class="headerlink" href="#aircraft" title="Permalink to this headline"></a></h1>
+<section id="thrust-and-angle-of-attack">
+<h2>Thrust and angle of attack<a class="headerlink" href="#thrust-and-angle-of-attack" title="Permalink to this headline"></a></h2>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/aircraft.png"><img alt="../_images/aircraft.png" src="../_images/aircraft.png" style="width: 400px;" /></a>
+<figcaption>
+<p><span class="caption-text">Definition of the climb angle and angle of attack.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<p>Thrust vector:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\vec{T} = -\vec{W} - \vec{D} = - \begin{bmatrix}0 \\ - mg\end{bmatrix} - \begin{bmatrix}D \cos \gamma \\ - D \sin \gamma \end{bmatrix}\end{split}\]</div>
+<p>Angle of attack:</p>
+<div class="math notranslate nohighlight">
+\[\alpha = \frac{\pi}{2} - \theta\]</div>
+<p>with</p>
+<div class="math notranslate nohighlight">
+\[\theta = \arccos(\bar{\vec{D}} \cdot \bar{\vec{T}}), \quad \bar{\vec{D}} = \frac{\vec{D}}{ ||\vec{D}|| } , \quad \bar{\vec{T}} = \frac{\vec{T}}{ ||\vec{T}|| }\]</div>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/aoa.png"><img alt="../_images/aoa.png" src="../_images/aoa.png" style="width: 270px;" /></a>
+<figcaption>
+<p><span class="caption-text">Force balance between thrust, drag, and aircraft weight.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<span class="target" id="module-aircraft"></span><dl class="py class">
+<dt class="sig sig-object py" id="aircraft.Aircraft">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aircraft.</span></span><span class="sig-name descname"><span class="pre">Aircraft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aircraft.Aircraft" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Vertical flight aircraft.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="aircraft.Aircraft.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#aircraft.Aircraft.name" title="Permalink to this definition"></a></dt>
+<dd><p>Name of the aircraft.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="aircraft.Aircraft.mtow">
+<span class="sig-name descname"><span class="pre">mtow</span></span><a class="headerlink" href="#aircraft.Aircraft.mtow" title="Permalink to this definition"></a></dt>
+<dd><p>Maximum take-off weight; kg</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="aircraft.Aircraft.empty_weight_ratio">
+<span class="sig-name descname"><span class="pre">empty_weight_ratio</span></span><a class="headerlink" href="#aircraft.Aircraft.empty_weight_ratio" title="Permalink to this definition"></a></dt>
+<dd><p>Ratio of empty weight to maximum take-off weight.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="aircraft.Aircraft.special_equipment">
+<span class="sig-name descname"><span class="pre">special_equipment</span></span><a class="headerlink" href="#aircraft.Aircraft.special_equipment" title="Permalink to this definition"></a></dt>
+<dd><p>Special equipment mass; kg</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="aircraft.Aircraft.accessory_power">
+<span class="sig-name descname"><span class="pre">accessory_power</span></span><a class="headerlink" href="#aircraft.Aircraft.accessory_power" title="Permalink to this definition"></a></dt>
+<dd><p>Accessory power; W</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="aircraft.Aircraft.eta_transmission">
+<span class="sig-name descname"><span class="pre">eta_transmission</span></span><a class="headerlink" href="#aircraft.Aircraft.eta_transmission" title="Permalink to this definition"></a></dt>
+<dd><p>Efficiency of the transmission.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aircraft.Aircraft.get_thrust_and_alpha">
+<span class="sig-name descname"><span class="pre">get_thrust_and_alpha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gross_weight</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gravity</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aircraft.Aircraft.get_thrust_and_alpha" title="Permalink to this definition"></a></dt>
+<dd><p>Determine the thrust and angle of attack by means of a force balance
+with drag and weight vectors (isolated rotor).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gross_weight</strong> (<em>float</em>) – Aircraft mass; kg</p></li>
+<li><p><strong>drag</strong> (<em>float</em>) – Drag force acting on the aircraft; N</p></li>
+<li><p><strong>gamma</strong> (<em>float</em>) – Climb angle; rad</p></li>
+<li><p><strong>gravity</strong> (<em>float</em>) – Gravitational acceleration; m/s²</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>float</em> – Thrust; N</p></li>
+<li><p><em>float</em> – Angle of attack; rad</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="Modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="engines.html" class="btn btn-neutral float-right" title="Engines" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fabian Grimm, Sumeet Kumar.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

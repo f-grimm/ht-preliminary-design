@@ -1,0 +1,11 @@
+
+Name: Climb and Descent
+
+Mission:
+
+    Duration: [0.1, 0.1] # h
+    Payload: [100, 100] # kg
+    Crew mass: [230, 230] # kg
+    Flight speed: [5, 5] # m/s
+    Temperature offset: [0, 0] # °C
+    Height: [0, 1800, 0] # m

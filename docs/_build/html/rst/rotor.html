@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rotor &mdash; Preliminary Design  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Ressources" href="ressources.html" />
+    <link rel="prev" title="Mission" href="mission.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Preliminary Design
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="input.html">Input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structure.html">Structure</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="aircraft.html">Aircraft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engines.html">Engines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fuselage.html">Fuselage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="helicopter.html">Helicopter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="landing_gear.html">Landing Gear</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mission.html">Mission</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Rotor</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ressources.html">Ressources</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Preliminary Design</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">Modules</a> &raquo;</li>
+      <li>Rotor</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/rst/rotor.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-rotor">
+<span id="rotor"></span><h1>Rotor<a class="headerlink" href="#module-rotor" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="rotor.Rotor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rotor.</span></span><span class="sig-name descname"><span class="pre">Rotor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rotor_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rotor.Rotor" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Rotors as aircraft components.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rotor.Rotor.radius">
+<span class="sig-name descname"><span class="pre">radius</span></span><a class="headerlink" href="#rotor.Rotor.radius" title="Permalink to this definition"></a></dt>
+<dd><p>Rotor radius; m</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rotor.Rotor.number_of_blades">
+<span class="sig-name descname"><span class="pre">number_of_blades</span></span><a class="headerlink" href="#rotor.Rotor.number_of_blades" title="Permalink to this definition"></a></dt>
+<dd><p>Number of blades.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rotor.Rotor.chord">
+<span class="sig-name descname"><span class="pre">chord</span></span><a class="headerlink" href="#rotor.Rotor.chord" title="Permalink to this definition"></a></dt>
+<dd><p>Chord length; m</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rotor.Rotor.kappa">
+<span class="sig-name descname"><span class="pre">kappa</span></span><a class="headerlink" href="#rotor.Rotor.kappa" title="Permalink to this definition"></a></dt>
+<dd><p>Factor between ideal and real induced power.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rotor.Rotor.zero_lift_drag_coeff">
+<span class="sig-name descname"><span class="pre">zero_lift_drag_coeff</span></span><a class="headerlink" href="#rotor.Rotor.zero_lift_drag_coeff" title="Permalink to this definition"></a></dt>
+<dd><p>Zero-lift drag coefficient of the rotor blade, average.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rotor.Rotor.tip_velocity">
+<span class="sig-name descname"><span class="pre">tip_velocity</span></span><a class="headerlink" href="#rotor.Rotor.tip_velocity" title="Permalink to this definition"></a></dt>
+<dd><p>Tip velocity; m/s</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rotor.Rotor.power_fraction">
+<span class="sig-name descname"><span class="pre">power_fraction</span></span><a class="headerlink" href="#rotor.Rotor.power_fraction" title="Permalink to this definition"></a></dt>
+<dd><p>Power fraction relative to the main rotor, if applicable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rotor.Rotor.installation_height">
+<span class="sig-name descname"><span class="pre">installation_height</span></span><a class="headerlink" href="#rotor.Rotor.installation_height" title="Permalink to this definition"></a></dt>
+<dd><p>Distance between landing gear and rotor; m</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rotor.Rotor.get_blade_loading">
+<span class="sig-name descname"><span class="pre">get_blade_loading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thrust</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rotor.Rotor.get_blade_loading" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the blade loading CT / sigma. [p.133]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>density</strong> (<em>float</em>) – Density of the surrounding air; kg/m³</p></li>
+<li><p><strong>thrust</strong> (<em>float</em>) – Thrust; N</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Blade loading.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rotor.Rotor.get_climb_power">
+<span class="sig-name descname"><span class="pre">get_climb_power</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flight_speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rotor.Rotor.get_climb_power" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the climb power due to the change in potential energy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flight_speed</strong> (<em>float</em>) – Flight speed; m/s</p></li>
+<li><p><strong>gamma</strong> (<em>float</em>) – Climb angle; rad</p></li>
+<li><p><strong>weight</strong> (<em>float</em>) – Aircraft weight; N</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Climb power; W</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rotor.Rotor.get_disc_loading">
+<span class="sig-name descname"><span class="pre">get_disc_loading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thrust</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rotor.Rotor.get_disc_loading" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the disc loading.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>thrust</strong> (<em>float</em>) – Thrust; N</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Disc loading; N/m²</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rotor.Rotor.get_figure_of_merit">
+<span class="sig-name descname"><span class="pre">get_figure_of_merit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ideal_induced_power</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile_power</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rotor.Rotor.get_figure_of_merit" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the figure of merit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ideal_induced_power</strong> (<em>float</em>) – Ideal induced power; W</p></li>
+<li><p><strong>profile_power</strong> (<em>float</em>) – Profile power; W</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Figure of merit</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rotor.Rotor.get_induced_velocity">
+<span class="sig-name descname"><span class="pre">get_induced_velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thrust</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rotor.Rotor.get_induced_velocity" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the induced velocity iteratively in forward flight (not valid
+for low sink rate in axial flight). [p.253]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>density</strong> (<em>float</em>) – Density of the surrounding air; kg/m³</p></li>
+<li><p><strong>v_inf</strong> (<em>float</em>) – Inflow velocity; m/s</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – Angle of attack; rad</p></li>
+<li><p><strong>thrust</strong> (<em>float</em>) – Thrust; N</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Induced velocity; m/s</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rotor.Rotor.get_min_power_radius">
+<span class="sig-name descname"><span class="pre">get_min_power_radius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thrust</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rotor.Rotor.get_min_power_radius" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the optimal rotor radius with respect to induced and profile
+power in hover. [p.103]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>density</strong> (<em>float</em>) – Density of the surrounding air; kg/m³</p></li>
+<li><p><strong>thrust</strong> (<em>float</em>) – Thrust; N</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Optimal radius; m</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rotor.Rotor.get_profile_power">
+<span class="sig-name descname"><span class="pre">get_profile_power</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">advance_ratio</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rotor.Rotor.get_profile_power" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the profile power. [p.258]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>density</strong> (<em>float</em>) – Density of the surrounding air; kg/m³</p></li>
+<li><p><strong>advance_ratio</strong> (<em>float</em>) – Advance ratio.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Profile power; W</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rotor.Rotor.in_ground_effect">
+<span class="sig-name descname"><span class="pre">in_ground_effect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">induced_power</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rotor.Rotor.in_ground_effect" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the induced power in ground effect (IGE) according to Hayden.
+[p.288]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>induced_power</strong> (<em>float</em>) – Induced power, W</p></li>
+<li><p><strong>height</strong> (<em>float</em>) – Height of the landing gear above ground; m</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Induced power in ground effect; W</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="rotor.Rotor.solidity">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">solidity</span></span><a class="headerlink" href="#rotor.Rotor.solidity" title="Permalink to this definition"></a></dt>
+<dd><p>Rotor solidity (rectangular approximation).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The solidity is implemented as a property, which means it can be used
+as an attribute, calculated on call. This way it will always be in
+sync with the rotor radius and chord length.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Solidity.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="mission.html" class="btn btn-neutral float-left" title="Mission" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ressources.html" class="btn btn-neutral float-right" title="Ressources" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fabian Grimm, Sumeet Kumar.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

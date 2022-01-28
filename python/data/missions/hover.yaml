@@ -1,0 +1,11 @@
+
+Name: Hover
+
+Mission:
+
+    Duration: [1] # h
+    Payload: [100] # kg
+    Crew mass: [230] # kg
+    Flight speed: [0] # m/s
+    Temperature offset: [0] # °C
+    Height: [0, 0] # m

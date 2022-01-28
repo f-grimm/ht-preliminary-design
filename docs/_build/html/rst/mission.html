@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mission &mdash; Preliminary Design  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Rotor" href="rotor.html" />
+    <link rel="prev" title="Landing Gear" href="landing_gear.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Preliminary Design
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="input.html">Input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structure.html">Structure</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="aircraft.html">Aircraft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engines.html">Engines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fuselage.html">Fuselage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="helicopter.html">Helicopter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="landing_gear.html">Landing Gear</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Mission</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rotor.html">Rotor</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ressources.html">Ressources</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Preliminary Design</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">Modules</a> &raquo;</li>
+      <li>Mission</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/rst/mission.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-mission">
+<span id="mission"></span><h1>Mission<a class="headerlink" href="#module-mission" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mission.Mission">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mission.</span></span><span class="sig-name descname"><span class="pre">Mission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mission.Mission" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Mission profile.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mission.Mission.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#mission.Mission.name" title="Permalink to this definition"></a></dt>
+<dd><p>Name of the mission.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mission.Mission.duration">
+<span class="sig-name descname"><span class="pre">duration</span></span><a class="headerlink" href="#mission.Mission.duration" title="Permalink to this definition"></a></dt>
+<dd><p>Duration of each segment; h</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mission.Mission.payload">
+<span class="sig-name descname"><span class="pre">payload</span></span><a class="headerlink" href="#mission.Mission.payload" title="Permalink to this definition"></a></dt>
+<dd><p>Payload; kg</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mission.Mission.crew_mass">
+<span class="sig-name descname"><span class="pre">crew_mass</span></span><a class="headerlink" href="#mission.Mission.crew_mass" title="Permalink to this definition"></a></dt>
+<dd><p>Crew mass; kg</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mission.Mission.flight_speed">
+<span class="sig-name descname"><span class="pre">flight_speed</span></span><a class="headerlink" href="#mission.Mission.flight_speed" title="Permalink to this definition"></a></dt>
+<dd><p>Flight speed; m/s</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mission.Mission.height">
+<span class="sig-name descname"><span class="pre">height</span></span><a class="headerlink" href="#mission.Mission.height" title="Permalink to this definition"></a></dt>
+<dd><p>Height above ground; m, length n + 1 as defined between segments. In
+case of climb/descent, the half-way height is used to calculate
+density, temperature, and pressure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mission.Mission.gravity">
+<span class="sig-name descname"><span class="pre">gravity</span></span><a class="headerlink" href="#mission.Mission.gravity" title="Permalink to this definition"></a></dt>
+<dd><p>Gravitational acceleration; m/s²</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mission.Mission.density">
+<span class="sig-name descname"><span class="pre">density</span></span><a class="headerlink" href="#mission.Mission.density" title="Permalink to this definition"></a></dt>
+<dd><p>Density of the surrounding air; kg/m³</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mission.Mission.temperature">
+<span class="sig-name descname"><span class="pre">temperature</span></span><a class="headerlink" href="#mission.Mission.temperature" title="Permalink to this definition"></a></dt>
+<dd><p>Temperature of the surrounding air; K</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mission.Mission.pressure">
+<span class="sig-name descname"><span class="pre">pressure</span></span><a class="headerlink" href="#mission.Mission.pressure" title="Permalink to this definition"></a></dt>
+<dd><p>Pressure of the surrounding air; Pa</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mission.Mission.climb_angle">
+<span class="sig-name descname"><span class="pre">climb_angle</span></span><a class="headerlink" href="#mission.Mission.climb_angle" title="Permalink to this definition"></a></dt>
+<dd><p>Climb angle; rad</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mission.Mission.plot_mission">
+<span class="sig-name descname"><span class="pre">plot_mission</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mission.Mission.plot_mission" title="Permalink to this definition"></a></dt>
+<dd><p>Plot the height and payload over the duration of the mission.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mission.atmosphere">
+<span class="sig-prename descclassname"><span class="pre">mission.</span></span><span class="sig-name descname"><span class="pre">atmosphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_offset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mission.atmosphere" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the density, temperature, and pressure at a given height
+based on the international standard atmosphere (ISA). Deviation from
+the ISA is considered via a temperature offset. [p. 278]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>height</strong> (<em>float</em>) – Height; m</p></li>
+<li><p><strong>temp_offset</strong> (<em>float</em>) – Temperature offset compared to the ISA; K or °C</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>float</em> – Density; kg/m³</p></li>
+<li><p><em>float</em> – Temperature; K</p></li>
+<li><p><em>float</em> – Pressure; Pa</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mission.get_climb_angle">
+<span class="sig-prename descclassname"><span class="pre">mission.</span></span><span class="sig-name descname"><span class="pre">get_climb_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flight_speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">climb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mission.get_climb_angle" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the climb angle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flight_speed</strong> (<em>float</em>) – Flight speed; m/s</p></li>
+<li><p><strong>climb</strong> (<em>float</em>) – Vertical distance; m</p></li>
+<li><p><strong>duration</strong> (<em>float</em>) – Duration; h</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Climb angle; rad</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="landing_gear.html" class="btn btn-neutral float-left" title="Landing Gear" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="rotor.html" class="btn btn-neutral float-right" title="Rotor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fabian Grimm, Sumeet Kumar.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

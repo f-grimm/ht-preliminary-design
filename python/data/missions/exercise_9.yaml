@@ -1,0 +1,11 @@
+
+Name: Exercise 9
+
+Mission:
+
+    Duration: [0.1, 0.067, 0.5, 0.2, 0.046, 0.77] # h
+    Payload: [0, 0, 0, 170, 170, 0] # kg
+    Crew mass: [230, 230, 230, 230, 230, 230] # kg
+    Flight speed: [0, 60, 75.1, 0, 60, 54] # m/s
+    Temperature offset: [0, 0, 0, 0, 0, 0] # °C or K
+    Height: [0, 0, 1500, 1500, 1500, 500, 500] # m
