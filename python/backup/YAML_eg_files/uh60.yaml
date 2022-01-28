@@ -1,0 +1,37 @@
+name: UH-60A Helicopter
+
+mr:  
+
+    key: 'mainrotor'
+    comment: '...'
+
+    structure: 
+        radius: 8.178
+	 sigma: 0.0826
+	    nb: 4
+     rstations: [0,1]         #allows for radial variation of properties (linear interpolation between stations)
+	 chord: [0.56,0.56]
+
+
+    aero:
+	vtip: 220.95
+	airfoil: [SC1095,SC1095]
+
+	
+tr:
+
+    key: 'tailrotor'
+    comment: '...'
+
+    properties: 
+        radius:  
+	sigma:  
+	nb: 
+	chord: 
+
+    structure:
+
+    aero:
+	vtip: 
+	airfoil: []
+

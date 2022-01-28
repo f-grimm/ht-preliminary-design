@@ -1,0 +1,37 @@
+name: B0 105 Helicopter
+
+mr:  
+
+    key: 'mainrotor'
+    comment: '...'
+
+    structure: 
+        radius: 4.912
+	 sigma: 0.07
+	    nb: 4
+     rstations: [0,1]         #allows for radial variation of properties (linear interpolation between stations)
+	 chord: [0.27,0.27]
+
+
+    aero:
+	vtip: 218.1
+	airfoil: [NACA23012,NACA23012]
+
+	
+tr:
+
+    key: 'tailrotor'
+    comment: '...'
+
+    properties: 
+        radius:  
+	sigma:  
+	nb: 
+	chord: 
+
+    structure:
+
+    aero:
+	vtip: 
+	airfoil: []
+
