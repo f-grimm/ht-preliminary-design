@@ -7,98 +7,37 @@ Created on Tue Jan 18 19:36:45 2022
 
 import numpy as np
 
-class Helicopter:
+class Aircraft:
 	"""
 	"""
-	def __init__(self, requirements, initial_parameters, assumptions):
-		self.mtom      = 0
-		self.solidity  = 1
+	def __init__(self):
+		# TODO: Import as YAML
+		# General
+		self.mtow = 0 # kg
+		self.main_rotor = Rotor()
+
+		# Power
+		self.power_available = 500 # kW
+
+		# Mission
+		self.payload   = 600 # kg
+		self.crew_mass = 200 # kg
+		self.duration  = 2.5 # h
 		
-		self.payload   = requirements["payload"]
-		self.crew_mass = requirements["crew_mass"]
-		self.duration  = requirements["duration"]
-
-		self.radius           = initial_parameters["rotor_radius"]
-		self.number_of_blades = initial_parameters["number_of_blades"]
-		self.chord            = initial_parameters["chord"]
-		self.power_available  = initial_parameters["power_available"]
-
-		self.gravity              = assumptions["gravity"]
-		self.density              = assumptions["density"]
-		self.kappa                = assumptions["kappa"]
-		self.zero_lift_drag_coeff = assumptions["zero_lift_drag_coeff"]
-		self.tip_velocity         = assumptions["tip_velocity"]
-		self.download_factor      = assumptions["download_factor"]
+		# Assumptions
+		self.gravity         = 9.81 # ms^-2
+		self.download_factor = 0.05 # -
 
 
-	def get_initial_mtom(self):
+	def get_initial_mtow(self):
 		"""Estimate the initial maximum take-off mass.
 		"""
-		P_av   = self.power_available
-		t      = self.duration
-		m_pl   = self.payload
-		m_crew = self.crew_mass
-		
-		m_fuel = 0.25 * P_av * t
-		useful_load = m_pl + m_fuel + m_crew
+		fuel_mass = 0.25 * self.power_available * self.duration
+		useful_load = fuel_mass + self.payload + self.crew_mass
 		empty_weight_ratio = 0.5
 
-		# Return MTOM
+		# MTOW
 		return useful_load / (1 - empty_weight_ratio)
-
-
-	def get_induced_power(self, thrust):
-		"""Calculate the induced power.
-		"""
-		T     = thrust
-		rho   = self.density
-		R     = self.radius
-		kappa = self.kappa
-
-		P_i_ideal = np.sqrt(T ** 3 / (2 * rho * np.pi * R ** 2))
-
-		# Return induced power
-		return kappa * P_i_ideal
-
-
-	def get_profile_power(self):
-		"""Calculate the profile power.
-		"""
-		rho    = self.density
-		V_tip  = self.tip_velocity
-		sigma  = self.solidity
-		C_d0   = self.zero_lift_drag_coeff
-		R      = self.radius
-
-		# Return profile power
-		return (1 / 8 * rho * V_tip ** 3 * sigma * C_d0 * np.pi * R ** 2)
-
-
-	def get_min_power_radius(self, thrust):
-		"""Calculate the optimal rotor radius w.r.t. induced and profile power 
-		in hover.
-		"""
-		T     = thrust
-		rho   = self.density
-		V_tip = self.tip_velocity
-		kappa = self.kappa
-		sigma = self.solidity
-		C_d0  = self.zero_lift_drag_coeff
-
-		# Return optimal radius
-		return (1 / V_tip * np.sqrt(2 * T / (rho * np.pi)) 
-		        * (kappa / (sigma * C_d0)) ** (1 / 3))
-
-
-	def get_solidity(self):
-		"""Calculate the rotor solidity (rectangular approximation).
-		"""
-		N_b = self.number_of_blades
-		c   = self.chord
-		R   = self.radius
-
-		# Return solidity
-		return N_b * c / (np.pi * R)
 
 
 	def iterate_first_sizing(self):
@@ -106,21 +45,24 @@ class Helicopter:
 		"""
 		# ---- Main rotor design ----------------------------------------------
 
-		weight = self.mtom * self.gravity
-		self.solidity = self.get_solidity()
-		self.radius = self.get_min_power_radius(thrust=weight)
+		weight = self.mtow * self.gravity
+		rotor = self.main_rotor
+		rotor.solidity = rotor.get_solidity()
+		rotor.radius = rotor.get_min_power_radius(thrust=weight)
 		# (additional factors should be considered)
 
 		# ---- Preliminary performance estimation -----------------------------
 		
-		P_i = self.get_induced_power(thrust=weight)
-		P_0 = self.get_profile_power()
-		P_h = P_i + P_0
+		induced_power = rotor.get_induced_power(thrust=weight)
+		profile_power = rotor.get_profile_power()
+		hover_power = induced_power + profile_power
+
+		print('Hover power: {:17.1f} kW'.format(hover_power / 1000))
 
 		# ---- Mass estimation incl. fuel -------------------------------------
 		
 		# Layton
-		# self.mtom = ...
+		# self.mtow = ...
 
 
 	def iterate_second_sizing(self):
@@ -133,49 +75,69 @@ class Helicopter:
 		# Mass estimation incl. fuel
 
 
-	def loop(self):
-		"""
-		"""
-		converged = False
-
-		while not converged:
-			self.iterate_first_sizing()
-			
-			if converged:
-				self.iterate_second_sizing()
-
-
+class Rotor:
+	"""
+	"""
+	def __init__(self):
+		# Geometry
+		self.radius           = 6.5 # m
+		self.number_of_blades = 4 # -
+		self.chord            = 0.27 # m
+		self.solidity         = 1 # -
 		
+		# Aerodynamics
+		self.density              = 1.225 # kgm^-3
+		self.kappa                = 1.15 # -
+		self.zero_lift_drag_coeff = 0.011 # -
+		self.tip_velocity         = 213 # ms^-1
+
+
+	def get_induced_power(self, thrust):
+		"""Calculate the induced power.
+		"""
+		ideal_induced_power = np.sqrt(
+			thrust ** 3 / (2 * self.density * np.pi * self.radius ** 2))
+		
+		# Induced power
+		return self.kappa * ideal_induced_power
+
+
+	def get_profile_power(self):
+		"""Calculate the profile power.
+		"""
+		# Profile power
+		return (1 / 8 * self.density * self.tip_velocity ** 3 * self.solidity 
+				* self.zero_lift_drag_coeff * np.pi * self.radius ** 2)
+
+
+	def get_min_power_radius(self, thrust):
+		"""Calculate the optimal rotor radius w.r.t. induced and profile power 
+		in hover.
+		"""
+		# Optimal radius
+		return (1 / self.tip_velocity 
+				* np.sqrt(2 * thrust / (self.density * np.pi)) 
+		        * (self.kappa / (self.solidity * self.zero_lift_drag_coeff)) 
+		          ** (1 / 3))
+
+
+	def get_solidity(self):
+		"""Calculate the rotor solidity (rectangular approximation).
+		"""
+		# Solidity
+		return self.number_of_blades * self.chord / (np.pi * self.radius)	
+
+
+
+
+
 if __name__ == "__main__":
 	"""
 	"""
-	requirements = {
-		"payload":   600, # kg
-		"crew_mass": 200, # kg
-		"duration":  2.5, # h
-		}
+	concept = Aircraft()
 
-	initial_parameters = {
-		"rotor_radius":     6.5, # m
-		"number_of_blades": 4, # -
-		"chord":            0.27, # m
-		"power_available":  500, # kW
-		}
+	concept.mtow = concept.get_initial_mtow()
+	print("First MTOW estimation: {:7.1f} kg".format(concept.mtow))
 
-	assumptions = {
-		"gravity":              9.81, # ms^-2
-		"density":              1.225, # kgm^-3
-		"kappa":                1.15, # -
-		"zero_lift_drag_coeff": 0.011, # -
-		"tip_velocity":         213, # ms^-1
-		"download_factor":      0.05, # -
-		}
-
-	concept = Helicopter(requirements, initial_parameters, assumptions)
-
-	concept.mtom = concept.get_initial_mtom()
-	print("First MTOM estimation: {} kg \n".format(concept.mtom))
-
-	
 	concept.iterate_first_sizing()
 
