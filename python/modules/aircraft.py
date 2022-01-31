@@ -5,26 +5,25 @@ Created on 2022-01-30
 @author: Fabian Grimm (f.grimm@tum.de)
 """
 
+import numpy as np
+import yaml
+
 class Aircraft:
 	"""
 	"""
-	def __init__(self):
-		# TODO: Import as YAML
-		# General
-		self.mtow = 0 # kg
-		
-		# Power
-		self.power_available = 500e3 # W
-		self.hover_power     = 0 # W
+	def __init__(self, filename):
+		# Load aircraft data from YAML file
+		with open('configurations/' + filename + '.yaml') as file:
+			aircraft_data = yaml.safe_load(file)['Aircraft']
 
-		# Mission
-		self.payload   = 600 # kg
-		self.crew_mass = 200 # kg
-		self.duration  = 2.5 # h
-		
-		# Assumptions
-		self.gravity         = 9.81 # ms^-2
-		self.download_factor = 0.05 # -
+		self.mtow            = aircraft_data['MTOW']
+		self.power_available = aircraft_data['Power available']
+		self.hover_power     = aircraft_data['Hover power']
+		self.payload         = aircraft_data['Payload']
+		self.crew_mass       = aircraft_data['Crew mass']
+		self.duration        = aircraft_data['Duration']
+		self.gravity         = aircraft_data['Gravity']
+		self.download_factor = aircraft_data['Download factor']
 
 
 	def get_initial_mtow(self):

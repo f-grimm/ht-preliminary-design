@@ -6,6 +6,14 @@ Helicopter sizing code for the TUM Institute of Helicopter Technology.
 
 - [ ] Create code structure
 
+## Install
+
+PyYAML:
+
+```
+pip install pyyaml
+```
+
 ## About
 
 TUM | Institute of Helicopter Technology
