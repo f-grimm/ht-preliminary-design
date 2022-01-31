@@ -1,0 +1,36 @@
+
+Name: Concept 01
+
+Aircraft:
+
+    # General
+    MTOW: 1000 # kg
+        
+    # Power
+    Power available: 500000 # W
+    Hover power: 0 # W
+
+    # Mission
+    Payload: 600 # kg
+    Crew mass: 200 # kg
+    Duration: 2.5 # h
+    
+    # Assumptions
+    Gravity: 9.81 # ms^-2
+    Download factor: 0.05 # -
+
+
+Rotor:
+   
+   # Geometry
+   Radius: 6.5 # m
+   Number of blades: 4 # -
+   Chord: 0.27 # m
+   Solidity: 0.07 # -
+
+   # Aerodynamics
+   Density: 1.225 # kgm^-3
+   Kappa: 1.15 # -
+   Zero-lift drag coeff.: 0.011 # -
+   Tip velocity: 213 # ms^-1
+
