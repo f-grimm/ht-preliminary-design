@@ -8,7 +8,7 @@ Helicopter sizing code for the TUM Institute of Helicopter Technology.
 
 ## Install
 
-PyYAML:
+YAML:
 
 ```
 pip install pyyaml
