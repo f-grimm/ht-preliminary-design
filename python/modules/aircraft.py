@@ -48,7 +48,7 @@ class Aircraft:
 		return 0.5 * density * self.flight_speed ** 3 * self.drag_area
 
 
-	def iterate_first_sizing_conv(self):
+	def iterate_first_sizing(self):
 		""" Perform one step in the first sizing loop for conventional 
 		helicopter configurations (Requires self.main_rotor of the class 
 		"Rotor").
@@ -77,8 +77,10 @@ class Aircraft:
 		self.figure_of_merit = (induced_power / rotor.kappa) / self.hover_power
 
 
-	def iterate_second_sizing_conv(self):
-		""" Perform one step in the second sizing loop.
+	def iterate_second_sizing(self):
+		""" Perform one step in the second sizing loop for conventional 
+		helicopter configurations (Requires self.tail_rotor of the class 
+		"Rotor").
 
 		TODO: 
 			- Solidity: Empirical reference instead of constant chord.
@@ -92,7 +94,7 @@ class Aircraft:
 		tr.solidity = tr.get_solidity()
 
 		# Fuselage and accessories [p.228]
-		parasite_power = get_parasite_power(tr.density)
+		parasite_power = self.get_parasite_power(tr.density)
 
 
 		# Refined performance calculation
