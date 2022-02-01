@@ -12,7 +12,7 @@ Aircraft:
 
     # Mission
     Payload: 600 # kg
-    Crew mass: 200 # kg
+    Crew mass: 230 # kg
     Duration: 2.5 # h
     
     # Assumptions
@@ -20,7 +20,7 @@ Aircraft:
     Download factor: 0.05 # -
 
 
-Rotor:
+Main rotor:
    
    # Geometry
    Radius: 6.5 # m
