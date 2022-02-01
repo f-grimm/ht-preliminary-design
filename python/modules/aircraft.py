@@ -27,7 +27,7 @@ class Aircraft:
 
 
 	def get_initial_mtow(self):
-		""" Estimate the initial maximum take-off weight.
+		""" Estimate the initial maximum take-off weight. [p.90-91]
 		"""
 		fuel_mass = 0.25e-3 * self.power_available * self.duration
 		useful_load = fuel_mass + self.payload + self.crew_mass
@@ -40,21 +40,30 @@ class Aircraft:
 	def iterate_first_sizing(self):
 		""" Perform one step in the first sizing loop. 
 		(Requires self.main_rotor of the class "Rotor")
+
+		TODO: Better would be solidity from blade loading diagram instead of 
+			constant chord.
 		"""
-		# Main rotor design (additional factors should be considered)
+		# Main rotor design (more factors should be considered) [p.98-172]
 		weight = self.mtow * self.gravity
 		rotor = self.main_rotor
 		rotor.solidity = rotor.get_solidity()
 		rotor.radius = rotor.get_min_power_radius(thrust=weight)
 
-		# Preliminary performance estimation
+		# Preliminary performance estimation [p.175]
 		induced_power = rotor.get_induced_power(thrust=weight)
 		profile_power = rotor.get_profile_power()
 		self.hover_power = induced_power + profile_power
 
-		# Mass estimation incl. fuel
-		# Layton
-		# self.mtow = ...
+		# Mass estimation incl. fuel [p.177-179]
+		empty_weight = 1000 # (TODO: Find empirical models)
+		fuel_mass = 0.38e-3 * 1.1 * self.hover_power * self.duration
+		self.mtow = empty_weight + fuel_mass + self.payload + self.crew_mass
+
+		# Disc loading and FM [p.181-183]
+		weight = self.mtow * self.gravity
+		rotor.disc_loading = rotor.get_disc_loading(thrust=weight)
+		self.figure_of_merit = (induced_power / rotor.kappa) / self.hover_power
 
 
 	def iterate_second_sizing(self):
