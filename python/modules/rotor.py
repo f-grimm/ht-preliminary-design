@@ -11,10 +11,10 @@ import yaml
 class Rotor:
 	"""
 	"""
-	def __init__(self, filename):
+	def __init__(self, filename, section):
 		# Load rotor data from YAML file
 		with open('configurations/' + filename + '.yaml') as file:
-			rotor_data = yaml.safe_load(file)['Rotor']
+			rotor_data = yaml.safe_load(file)[section]
 
 		self.radius               = rotor_data['Radius']
 		self.number_of_blades     = rotor_data['Number of blades']
@@ -46,7 +46,7 @@ class Rotor:
 
 	def get_min_power_radius(self, thrust):
 		""" Calculate the optimal rotor radius w.r.t. induced and profile power 
-		in hover.
+		in hover. [p.103]
 		"""
 		# Optimal radius [m]
 		return (1 / self.tip_velocity 
@@ -56,7 +56,14 @@ class Rotor:
 
 
 	def get_solidity(self):
-		"""Calculate the rotor solidity (rectangular approximation).
+		""" Calculate the rotor solidity (rectangular approximation).
 		"""
 		# Solidity [-]
 		return self.number_of_blades * self.chord / (np.pi * self.radius)
+
+
+	def get_disc_loading(self, thrust):
+		""" Calculate the disc loading.
+		"""
+		# Disc loading [Nm^-2]
+		return thrust / (np.pi * self.radius ** 2)
