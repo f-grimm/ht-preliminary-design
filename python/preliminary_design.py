@@ -15,7 +15,7 @@ from modules.rotor import *
 aircraft = Aircraft('concept_01')
 
 # Add main rotor
-aircraft.main_rotor = Rotor('concept_01')
+aircraft.main_rotor = Rotor('concept_01', 'Main rotor')
 
 # Estimate MTOW based on mission profile
 aircraft.mtow = aircraft.get_initial_mtow()
