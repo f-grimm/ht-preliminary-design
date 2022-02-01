@@ -23,11 +23,11 @@ aircraft.mtow = aircraft.get_initial_mtow()
 print("First MTOW estimation: {:7.1f} kg".format(aircraft.mtow))
 
 # Perform one step in the first sizing loop
-aircraft.iterate_first_sizing_conv()
+aircraft.iterate_first_sizing()
 print('Hover power: {:17.1f} kW'.format(aircraft.hover_power / 1000))
 
 # Perform one step in the second sizing loop
-aircraft.iterate_second_sizing_conv()
+aircraft.iterate_second_sizing()
 
 
 
