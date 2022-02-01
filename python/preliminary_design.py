@@ -14,15 +14,20 @@ from modules.rotor import *
 # Create aircraft object with initial values from YAML file
 aircraft = Aircraft('concept_01')
 
-# Add main rotor
+# Add main and tail rotor
 aircraft.main_rotor = Rotor('concept_01', 'Main rotor')
+aircraft.tail_rotor = Rotor('concept_01', 'Tail rotor')
 
 # Estimate MTOW based on mission profile
 aircraft.mtow = aircraft.get_initial_mtow()
 print("First MTOW estimation: {:7.1f} kg".format(aircraft.mtow))
 
 # Perform one step in the first sizing loop
-aircraft.iterate_first_sizing()
+aircraft.iterate_first_sizing_conv()
 print('Hover power: {:17.1f} kW'.format(aircraft.hover_power / 1000))
+
+# Perform one step in the second sizing loop
+aircraft.iterate_second_sizing_conv()
+
 
 
