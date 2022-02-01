@@ -22,12 +22,15 @@ class Aircraft:
 		self.payload         = aircraft_data['Payload']
 		self.crew_mass       = aircraft_data['Crew mass']
 		self.duration        = aircraft_data['Duration']
+		self.flight_speed    = aircraft_data['Flight speed']
 		self.gravity         = aircraft_data['Gravity']
 		self.download_factor = aircraft_data['Download factor']
+		self.drag_area       = aircraft_data['Drag area']
 
 
 	def get_initial_mtow(self):
-		""" Estimate the initial maximum take-off weight. [p.90-91]
+		""" Estimate the initial maximum take-off weight based on the mission 
+		profile. [p.90-91]
 		"""
 		fuel_mass = 0.25e-3 * self.power_available * self.duration
 		useful_load = fuel_mass + self.payload + self.crew_mass
@@ -37,17 +40,25 @@ class Aircraft:
 		return useful_load / (1 - empty_weight_ratio)
 
 
-	def iterate_first_sizing(self):
-		""" Perform one step in the first sizing loop. 
-		(Requires self.main_rotor of the class "Rotor")
+	def get_parasite_power(self, density):
+		""" Calculate the parasite power created by the fuselage drag in 
+		forward flight.
+		"""
+		# Parasite power [W]
+		return 0.5 * density * self.flight_speed ** 3 * self.drag_area
 
-		TODO: Better would be solidity from blade loading diagram instead of 
-			constant chord.
+
+	def iterate_first_sizing_conv(self):
+		""" Perform one step in the first sizing loop for conventional 
+		helicopter configurations (Requires self.main_rotor of the class 
+		"Rotor").
+
+		TODO: Solidity: Blade loading diagram instead of constant chord.
 		"""
 		# Main rotor design (more factors should be considered) [p.98-172]
-		weight = self.mtow * self.gravity
 		rotor = self.main_rotor
 		rotor.solidity = rotor.get_solidity()
+		weight = self.mtow * self.gravity
 		rotor.radius = rotor.get_min_power_radius(thrust=weight)
 
 		# Preliminary performance estimation [p.175]
@@ -66,11 +77,24 @@ class Aircraft:
 		self.figure_of_merit = (induced_power / rotor.kappa) / self.hover_power
 
 
-	def iterate_second_sizing(self):
+	def iterate_second_sizing_conv(self):
 		""" Perform one step in the second sizing loop.
+
+		TODO: 
+			- Solidity: Empirical reference instead of constant chord.
+			- How should the download factor be considered? What counts as slow
+				flight?
+			- Altitude and ISA calculation instead of density in rotor class
 		"""
-		# Tail rotor design
-		# Fuselage and accessories
+		# Tail rotor design [p.204-213]
+		tr = self.tail_rotor
+		tr.radius = 0.4 * np.sqrt(2.2 * self.mtow / 1000)
+		tr.solidity = tr.get_solidity()
+
+		# Fuselage and accessories [p.228]
+		parasite_power = get_parasite_power(tr.density)
+
+
 		# Refined performance calculation
 		# Selection of engine and gearbox
 		# Mass estimation incl. fuel
