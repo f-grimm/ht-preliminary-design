@@ -14,10 +14,12 @@ Aircraft:
     Payload: 600 # kg
     Crew mass: 230 # kg
     Duration: 2.5 # h
+    Flight speed: 70 # ms^-1
     
     # Assumptions
     Gravity: 9.81 # ms^-2
     Download factor: 0.05 # -
+    Drag area: 2 # m^2
 
 
 Main rotor:
@@ -34,3 +36,17 @@ Main rotor:
    Zero-lift drag coeff.: 0.011 # -
    Tip velocity: 213 # ms^-1
 
+
+Tail rotor:
+   
+   # Geometry
+   Radius: 0.8 # m
+   Number of blades: 4 # -
+   Chord: 0.1 # m
+   Solidity: 0.1 # -
+
+   # Aerodynamics
+   Density: 1.225 # kgm^-3
+   Kappa: 1.15 # -
+   Zero-lift drag coeff.: 0.011 # -
+   Tip velocity: 213 # ms^-1
