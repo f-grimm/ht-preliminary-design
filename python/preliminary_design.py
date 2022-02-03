@@ -20,11 +20,11 @@ aircraft.tail_rotor = Rotor('concept_01', 'Tail rotor')
 
 # Estimate MTOW based on mission profile
 aircraft.mtow = aircraft.get_initial_mtow()
-print("First MTOW estimation: {:7.1f} kg".format(aircraft.mtow))
+print(f'First MTOW estimation: {aircraft.mtow:7.1f} kg')
 
 # Perform one step in the first sizing loop
 aircraft.iterate_first_sizing()
-print('Hover power: {:17.1f} kW'.format(aircraft.hover_power / 1000))
+print(f'Hover power: {(aircraft.hover_power / 1000):17.1f} kW')
 
 # Perform one step in the second sizing loop
 aircraft.iterate_second_sizing()
