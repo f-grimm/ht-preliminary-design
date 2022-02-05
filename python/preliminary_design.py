@@ -5,8 +5,8 @@ Created on Tue Jan 18 19:36:45 2022
 @author: Fabian Grimm (f.grimm@tum.de)
 """
 
-from modules.aircraft import *
-from modules.rotor import *
+from modules.aircraft import Aircraft
+from modules.rotor import Rotor
 
 """
 """
@@ -28,6 +28,7 @@ print(f'Hover power: {(aircraft.hover_power / 1000):17.1f} kW')
 
 # Perform one step in the second sizing loop
 aircraft.iterate_second_sizing()
+print(f'Tail rotor radius: {aircraft.tail_rotor.radius:11.1f} m')
 
 
 
