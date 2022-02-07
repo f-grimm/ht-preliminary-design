@@ -3,50 +3,55 @@ Name: Concept 01
 
 Aircraft:
 
-    # General
-    MTOW: 1000 # kg
-        
-    # Power
-    Power available: 500000 # W
-    Hover power: 0 # W
+   Misc:
 
-    # Mission
-    Payload: 600 # kg
-    Crew mass: 230 # kg
-    Duration: 2.5 # h
-    Flight speed: 70 # ms^-1
-    
-    # Assumptions
-    Gravity: 9.81 # ms^-2
-    Download factor: 0.05 # -
-    Drag area: 2 # m^2
+      EWR: 0.5
+      Gravity: 9.81 # ms^-2
 
+   Mission:
 
-Main rotor:
-   
-   # Geometry
-   Radius: 6.5 # m
-   Number of blades: 4 # -
-   Chord: 0.27 # m
-   Solidity: 0.07 # -
+      Payload: [600, 550] # kg
+      Crew mass: [230, 230] # kg
+      Duration: [2.5, 1] # h
+      Flight speed: [70, 60] # ms^-1
+      Height: [10, 10000]
+      Delta Temp: [0, 0]
 
-   # Aerodynamics
-   Density: 1.225 # kgm^-3
-   Kappa: 1.15 # -
-   Zero-lift drag coeff.: 0.011 # -
-   Tip velocity: 213 # ms^-1
+   Engine:
 
+      Power available: 500000 # W
+      SFC:
+      Number of engines:
+      Weight:
 
-Tail rotor:
-   
-   # Geometry
-   Radius: 0.8 # m
-   Number of blades: 4 # -
-   Chord: 0.1 # m
-   Solidity: 0.1 # -
+   Fuselage:
 
-   # Aerodynamics
-   Density: 1.225 # kgm^-3
-   Kappa: 1.15 # -
-   Zero-lift drag coeff.: 0.011 # -
-   Tip velocity: 213 # ms^-1
+      Download factor: 0.05 # -
+      Drag area: 2 # m^2
+
+   Rotor 1:
+      
+      # Geometry
+      Radius: 6.5 # m
+      Number of blades: 4 # -
+      Chord: 0.27 # m
+      Solidity: 0.07 # -
+
+      # Aerodynamics
+      Density: 1.225 # kgm^-3
+      Kappa: 1.15 # -
+      Zero-lift drag coeff.: 0.011 # -
+      Tip velocity: 213 # ms^-1
+
+   Rotor 2:
+      
+      # Geometry
+      Radius: 0.8 # m
+      Number of blades: 4 # -
+      Chord: 0.1 # m
+      Solidity: 0.1 # -
+
+      # Aerodynamics
+      Kappa: 1.15 # -
+      Zero-lift drag coeff.: 0.011 # -
+      Tip velocity: 213 # ms^-1
