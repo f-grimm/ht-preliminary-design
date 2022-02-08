@@ -6,51 +6,46 @@ Created on 2022-01-30
 """
 
 import numpy as np
-import yaml
 
 class Rotor:
 	"""
 	"""
-	def __init__(self, filename, section):
-		# Load rotor data from YAML file
-		with open('configurations/' + filename + '.yaml') as file:
-			rotor_data = yaml.safe_load(file)[section]
-
+	def __init__(self, rotor_data: dict):
+		
 		self.radius               = rotor_data['Radius']
 		self.number_of_blades     = rotor_data['Number of blades']
 		self.chord                = rotor_data['Chord']
 		self.solidity             = rotor_data['Solidity']
-		self.density              = rotor_data['Density']
 		self.kappa                = rotor_data['Kappa']
 		self.zero_lift_drag_coeff = rotor_data['Zero-lift drag coeff.']
 		self.tip_velocity         = rotor_data['Tip velocity']
 
 
-	def get_induced_power(self, thrust):
+	def get_induced_power(self, density, thrust):
 		""" Calculate the induced power.
 		"""
 		ideal_induced_power = np.sqrt(
-			thrust ** 3 / (2 * self.density * np.pi * self.radius ** 2))
+			thrust ** 3 / (2 * density * np.pi * self.radius ** 2))
 		
 		# Induced power [W]
 		return self.kappa * ideal_induced_power
 
 
-	def get_profile_power(self):
+	def get_profile_power(self, density):
 		""" Calculate the profile power.
 		"""
 		# Profile power [W]
-		return (1 / 8 * self.density * self.tip_velocity ** 3 * self.solidity 
+		return (1 / 8 * density * self.tip_velocity ** 3 * self.solidity 
 		        * self.zero_lift_drag_coeff * np.pi * self.radius ** 2)
 
 
-	def get_min_power_radius(self, thrust):
+	def get_min_power_radius(self, density, thrust):
 		""" Calculate the optimal rotor radius w.r.t. induced and profile power 
 		in hover. [p.103]
 		"""
 		# Optimal radius [m]
 		return (1 / self.tip_velocity 
-		        * np.sqrt(2 * thrust / (self.density * np.pi)) 
+		        * np.sqrt(2 * thrust / (density * np.pi)) 
 		        * (self.kappa / (self.solidity * self.zero_lift_drag_coeff)) 
 		          ** (1 / 3))
 
