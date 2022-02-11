@@ -21,7 +21,7 @@ class Rotor:
 		self.tip_velocity         = rotor_data['Tip velocity']
 
 
-	def get_induced_power(self, density, thrust):
+	def get_induced_power_hover(self, density, thrust):
 		""" Calculate the induced power in hover.
 		"""
 		ideal_induced_power = np.sqrt(
@@ -53,12 +53,13 @@ class Rotor:
 		return v_i
 
 
-	def get_profile_power(self, density):
-		""" Calculate the profile power.
+	def get_profile_power(self, density, advance_ratio):
+		""" Calculate the profile power. [p.258]
 		"""
 		# Profile power [W]
 		return (1 / 8 * density * self.tip_velocity ** 3 * self.solidity 
-		        * self.zero_lift_drag_coeff * np.pi * self.radius ** 2)
+		        * self.zero_lift_drag_coeff * np.pi * self.radius ** 2
+		        * (1 + 4.65 * advance_ratio ** 2))
 
 
 	def get_min_power_radius(self, density, thrust):
