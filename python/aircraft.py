@@ -33,13 +33,15 @@ class Aircraft:
 
 
 	def set_mission_segment(self, i):
-		""" Select the mission segment from lists defined in the YAML file
-		(starting at 1).
+		""" Select the mission segment from lists defined in the YAML file. 
+		E.g. Payload: [600, 550] # kg
+		       -> i =  1,   2
 		"""
 		self.payload      = self.mission['Payload'][i - 1]
 		self.crew_mass    = self.mission['Crew mass'][i - 1]
 		self.duration     = self.mission['Duration'][i - 1]
 		self.flight_speed = self.mission['Flight speed'][i - 1]
+		self.climb_angle  = self.mission['Climb angle'][i - 1] * np.pi / 180
 		self.height       = self.mission['Height'][i - 1]
 		self.temp_offset  = self.mission['Temperature offset'][i - 1]
 		self.density      = get_density(self.height, self.temp_offset)
@@ -51,6 +53,35 @@ class Aircraft:
 		"""
 		# Parasite power [W]
 		return 0.5 * self.density * self.flight_speed ** 3 * self.drag_area
+
+
+	def get_fuselage_drag(self):
+		""" Calculate the fuselage drag.
+		"""
+		# Fuselage drag [N]
+		return 0.5 * self.density * self.flight_speed ** 2 * self.drag_area
+
+
+	def get_thrust(self, drag):
+		""" Calculate the required thrust in translatory motion.
+		"""
+		weight = self.mtow * self.gravity
+
+		# Thrust [N]
+		return ((drag + weight * (np.sin(self.climb_angle) 
+		         + np.cos(self.climb_angle))) / 
+		        (np.sin(self.alpha) + np.cos(self.alpha)))
+
+
+	def get_angle_of_attack(self, drag):
+		""" Calculate the angle of attack based on a force balance with thrust,
+		weight, and fuselage drag.
+		"""
+		weight = self.mtow * self.gravity
+
+		# Angle of attack [rad]
+		return np.arctan((drag + weight * np.sin(self.climb_angle)) /
+		                 (weight * np.cos(self.climb_angle)))
 
 
 	def get_initial_mtow(self):
@@ -102,17 +133,23 @@ class Aircraft:
 			- Solidity: Empirical reference instead of constant chord.
 			- How should the download factor be considered? What counts as slow
 				flight?
-			- Altitude and ISA calculation instead of density in rotor class
 		"""
 		# Tail rotor design [p.204-213]
 		tr = self.tail_rotor
 		tr.radius = 0.4 * np.sqrt(2.2 * self.mtow / 1000)
 		tr.solidity = tr.get_solidity()
 
-		# Fuselage and accessories [p.228]
+		# Fuselage[p.230]
 		parasite_power = self.get_parasite_power()
 
 		# Refined performance calculation
+		drag = self.get_fuselage_drag()
+		self.alpha = self.get_angle_of_attack(drag)
+		thrust = self.get_thrust(drag)
+		induced_velocity = self.main_rotor.get_induced_velocity(
+			self.density, self.flight_speed, self.alpha, thrust)
+		induced_power = self.main_rotor.kappa * thrust * induced_velocity
+
 		# Selection of engine and gearbox
 		# Mass estimation incl. fuel
 	
