@@ -22,13 +22,35 @@ class Rotor:
 
 
 	def get_induced_power(self, density, thrust):
-		""" Calculate the induced power.
+		""" Calculate the induced power in hover.
 		"""
 		ideal_induced_power = np.sqrt(
 			thrust ** 3 / (2 * density * np.pi * self.radius ** 2))
 		
 		# Induced power [W]
 		return self.kappa * ideal_induced_power
+
+
+	def get_induced_velocity(self, density, v_inf, alpha, thrust):
+		""" Calculate the induced velocity in forward flight (not valid for 
+		low sink rate in axial flight) [p. 253]
+		"""
+		area = np.pi * self.radius ** 2
+		v_i = np.sqrt(thrust / (2 * density * area))
+		counter = 0
+		error = 1
+
+		while error > 0.01:
+			combined_velocity = np.sqrt(
+				v_inf ** 2 - 2 * v_inf * v_i * np.sin(alpha) + v_i ** 2)
+			v_i_new = (thrust / (2 * density * area * combined_velocity))
+			error = abs((v_i_new - v_i) / v_i)
+			v_i = v_i_new
+			counter += 1
+			if counter > 100: raise ValueError('No convergence.')
+
+		# Induced velocity [m s^-1]
+		return v_i
 
 
 	def get_profile_power(self, density):
@@ -60,5 +82,5 @@ class Rotor:
 	def get_disc_loading(self, thrust):
 		""" Calculate the disc loading.
 		"""
-		# Disc loading [Nm^-2]
+		# Disc loading [N m^-2]
 		return thrust / (np.pi * self.radius ** 2)
