@@ -46,5 +46,6 @@ Mission:
    Crew mass: [230, 230] # kg
    Duration: [2.5, 1] # h
    Flight speed: [70, 60] # ms^-1
-   Height: [10, 10000]
-   Temperature offset: [0, 0]
+   Climb angle: [30, 0] # deg
+   Height: [10, 10000] # m
+   Temperature offset: [0, 0] # °C
