@@ -8,7 +8,7 @@ Created on 2022-02-08
 def get_density(height, temperature_offset):
 	""" Calculate the density at a given height based on the international
 	standard atmosphere (ISA). Deviation from the ISA is considered via a
-	temperature offset.
+	temperature offset. [p. 278]
 	"""
 
 	temperature_msl = 288.15
