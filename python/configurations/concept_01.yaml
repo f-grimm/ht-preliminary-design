@@ -26,6 +26,7 @@ Tail rotor:
 Engine:
 
    Power available: 500000 # W
+   Accessory power: 48000 # W [p. 271]
    SFC: 0.35 # 
 
 Fuselage:
@@ -36,6 +37,7 @@ Fuselage:
 Misc:
 
    Empty weight ratio: 0.5
+   Transmission efficiency: 0.98
    Gravity: 9.81 # ms^-2
 
 Mission:
