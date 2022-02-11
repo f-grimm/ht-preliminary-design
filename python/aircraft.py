@@ -24,10 +24,12 @@ class Aircraft:
 			self.tail_rotor = Rotor(data['Tail rotor'])
 
 		self.power_available    = data['Engine']['Power available']
+		self.accessory_power    = data['Engine']['Accessory power']
 		self.sfc                = data['Engine']['SFC']
 		self.download_factor    = data['Fuselage']['Download factor']
 		self.drag_area          = data['Fuselage']['Drag area']
 		self.empty_weight_ratio = data['Misc']['Empty weight ratio']
+		self.eta_transmission   = data['Misc']['Transmission efficiency']
 		self.gravity            = data['Misc']['Gravity']
 		self.mission            = data['Mission']
 
@@ -53,6 +55,15 @@ class Aircraft:
 		"""
 		# Parasite power [W]
 		return 0.5 * self.density * self.flight_speed ** 3 * self.drag_area
+
+
+	def get_climb_power(self):
+		""" Claculate the climb power due to change in potential energy.
+		"""
+		weight = self.mtow * self.gravity
+
+		# Climb power [W]
+		return weight * self.flight_speed * np.sin(self.climb_angle)
 
 
 	def get_fuselage_drag(self):
@@ -110,8 +121,10 @@ class Aircraft:
 		rotor.radius = rotor.get_min_power_radius(self.density, thrust=weight)
 
 		# Preliminary performance estimation [p.175]
-		induced_power = rotor.get_induced_power(self.density, thrust=weight)
-		profile_power = rotor.get_profile_power(self.density)
+		induced_power = rotor.get_induced_power_hover(
+			self.density, thrust=weight)
+		profile_power = rotor.get_profile_power(
+			self.density, advance_ratio=0)
 		self.hover_power = induced_power + profile_power
 
 		# Mass estimation incl. fuel [p.177-179]
@@ -127,7 +140,7 @@ class Aircraft:
 
 	def iterate_second_sizing(self):
 		""" Perform one step in the second sizing loop for conventional 
-		helicopter configurations (requires tail rotor).
+		helicopter configurations (requires main and tail rotor).
 
 		TODO: 
 			- Solidity: Empirical reference instead of constant chord.
@@ -139,16 +152,23 @@ class Aircraft:
 		tr.radius = 0.4 * np.sqrt(2.2 * self.mtow / 1000)
 		tr.solidity = tr.get_solidity()
 
-		# Fuselage[p.230]
-		parasite_power = self.get_parasite_power()
-
-		# Refined performance calculation
+		# Refined performance calculation [pp. 251 - 321]
 		drag = self.get_fuselage_drag()
 		self.alpha = self.get_angle_of_attack(drag)
+		self.advance_ratio = self.flight_speed / self.main_rotor.tip_velocity
 		thrust = self.get_thrust(drag)
 		induced_velocity = self.main_rotor.get_induced_velocity(
 			self.density, self.flight_speed, self.alpha, thrust)
 		induced_power = self.main_rotor.kappa * thrust * induced_velocity
+		profile_power = self.main_rotor.get_profile_power(
+			self.density, self.advance_ratio)
+		parasite_power = self.get_parasite_power()
+		climb_power = self.get_climb_power()
+		mr_power = induced_power + profile_power + parasite_power + climb_power
+		tr_power = 0.05 * mr_power
+		ac_power = self.accessory_power
+		transmission_losses = ((1 / self.eta_transmission) - 1) * mr_power
+		power = mr_power + tr_power + transmission_losses + ac_power
 
 		# Selection of engine and gearbox
 		# Mass estimation incl. fuel
@@ -162,8 +182,7 @@ class Aircraft:
 
 		if logs:
 			print(f'Mission segment: 1')
-			print(f'Height: {self.height:.2f} m')
-			print(f'Density: {self.density:.2f} kg m^-3\n-----')
+			print(f'Height: {self.height:.2f} m\n-----')
 			print(f'First MTOW estimation: {self.mtow:10.2f} kg')
 
 		self.iterate_first_sizing()
