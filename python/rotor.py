@@ -43,7 +43,7 @@ class Rotor:
 		while error > 0.01:
 			combined_velocity = np.sqrt(
 				v_inf ** 2 - 2 * v_inf * v_i * np.sin(alpha) + v_i ** 2)
-			v_i_new = (thrust / (2 * density * area * combined_velocity))
+			v_i_new = thrust / (2 * density * area * combined_velocity)
 			error = abs((v_i_new - v_i) / v_i)
 			v_i = v_i_new
 			counter += 1
