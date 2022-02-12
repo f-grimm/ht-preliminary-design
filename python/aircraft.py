@@ -7,8 +7,8 @@ Created on 2022-01-30
 
 import numpy as np
 import yaml
-from . import rotor
-from . import mission
+import rotor
+import mission
 
 class Aircraft:
 	"""
