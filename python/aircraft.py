@@ -22,6 +22,8 @@ class Aircraft:
 			self.main_rotor = rotor.Rotor(data['Main rotor'])
 		if 'Tail rotor' in data:
 			self.tail_rotor = rotor.Rotor(data['Tail rotor'])
+		if 'Mission' in data:
+			self.mission = mission.Mission(data['Mission'])
 
 		self.power_available    = data['Engine']['Power available']
 		self.accessory_power    = data['Engine']['Accessory power']
@@ -31,22 +33,8 @@ class Aircraft:
 		self.empty_weight_ratio = data['Misc']['Empty weight ratio']
 		self.eta_transmission   = data['Misc']['Transmission efficiency']
 		self.gravity            = data['Misc']['Gravity']
-		self.mission            = data['Mission']
-
-
-	def set_mission_segment(self, i):
-		""" Select the mission segment from lists defined in the YAML file. 
-		E.g. Payload: [600, 550] # kg
-		       -> i =  1,   2
-		"""
-		self.payload      = self.mission['Payload'][i - 1]
-		self.crew_mass    = self.mission['Crew mass'][i - 1]
-		self.duration     = self.mission['Duration'][i - 1]
-		self.flight_speed = self.mission['Flight speed'][i - 1]
-		self.climb_angle  = self.mission['Climb angle'][i - 1] * np.pi / 180
-		self.height       = self.mission['Height'][i - 1]
-		self.temp_offset  = self.mission['Temperature offset'][i - 1]
-		self.density      = mission.get_density(self.height, self.temp_offset)
+		self.mtow               = 0
+		self.alpha              = 0
 
 
 	def get_parasite_power(self):
@@ -54,7 +42,8 @@ class Aircraft:
 		forward flight.
 		"""
 		# Parasite power [W]
-		return 0.5 * self.density * self.flight_speed ** 3 * self.drag_area
+		return (0.5 * self.mission.density * self.mission.flight_speed ** 3 
+		        * self.drag_area)
 
 
 	def get_climb_power(self):
@@ -63,14 +52,16 @@ class Aircraft:
 		weight = self.mtow * self.gravity
 
 		# Climb power [W]
-		return weight * self.flight_speed * np.sin(self.climb_angle)
+		return (weight * self.mission.flight_speed 
+		        * np.sin(self.mission.climb_angle))
 
 
 	def get_fuselage_drag(self):
 		""" Calculate the fuselage drag.
 		"""
 		# Fuselage drag [N]
-		return 0.5 * self.density * self.flight_speed ** 2 * self.drag_area
+		return (0.5 * self.mission.density * self.mission.flight_speed ** 2 
+		        * self.drag_area)
 
 
 	def get_thrust(self, drag):
@@ -79,9 +70,9 @@ class Aircraft:
 		weight = self.mtow * self.gravity
 
 		# Thrust [N]
-		return ((drag + weight * (np.sin(self.climb_angle) 
-		         + np.cos(self.climb_angle))) / 
-		        (np.sin(self.alpha) + np.cos(self.alpha)))
+		return ((drag + weight * (np.sin(self.mission.climb_angle) 
+		         + np.cos(self.mission.climb_angle))) 
+		        / (np.sin(self.alpha) + np.cos(self.alpha)))
 
 
 	def get_angle_of_attack(self, drag):
@@ -91,5 +82,5 @@ class Aircraft:
 		weight = self.mtow * self.gravity
 
 		# Angle of attack [rad]
-		return np.arctan((drag + weight * np.sin(self.climb_angle)) /
-		                 (weight * np.cos(self.climb_angle)))
+		return np.arctan((drag + weight * np.sin(self.mission.climb_angle)) 
+		                 / (weight * np.cos(self.mission.climb_angle)))
