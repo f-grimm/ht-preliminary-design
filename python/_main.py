@@ -6,6 +6,7 @@ Created on 2022-02-08
 """
 
 from aircraft import Aircraft
+from preliminary_design import preliminary_design
 
 """
 """
@@ -14,5 +15,5 @@ from aircraft import Aircraft
 aircraft = Aircraft('concept_01.yaml')
 
 # Start premilinary design
-aircraft.preliminary_design(logs=True)
+preliminary_design(aircraft, logs=True)
 
