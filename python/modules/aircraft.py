@@ -7,8 +7,8 @@ Created on 2022-01-30
 
 import numpy as np
 import yaml
-from modules.rotor import Rotor
-from modules.mission import get_density
+from . import rotor
+from . import mission
 
 class Aircraft:
 	"""
@@ -19,9 +19,9 @@ class Aircraft:
 			data = yaml.safe_load(file)
 
 		if 'Main rotor' in data:
-			self.main_rotor = Rotor(data['Main rotor'])
+			self.main_rotor = rotor.Rotor(data['Main rotor'])
 		if 'Tail rotor' in data:
-			self.tail_rotor = Rotor(data['Tail rotor'])
+			self.tail_rotor = rotor.Rotor(data['Tail rotor'])
 
 		self.power_available    = data['Engine']['Power available']
 		self.accessory_power    = data['Engine']['Accessory power']
@@ -46,7 +46,7 @@ class Aircraft:
 		self.climb_angle  = self.mission['Climb angle'][i - 1] * np.pi / 180
 		self.height       = self.mission['Height'][i - 1]
 		self.temp_offset  = self.mission['Temperature offset'][i - 1]
-		self.density      = get_density(self.height, self.temp_offset)
+		self.density      = mission.get_density(self.height, self.temp_offset)
 
 
 	def get_parasite_power(self):

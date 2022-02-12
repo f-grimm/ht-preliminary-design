@@ -5,7 +5,7 @@ Created on 2022-02-08
 @author: Fabian Grimm (f.grimm@tum.de)
 """
 
-from aircraft import Aircraft
+from modules.aircraft import Aircraft
 
 """
 """
