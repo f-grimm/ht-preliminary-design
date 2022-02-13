@@ -22,7 +22,7 @@ def get_initial_mtow(aircraft: object):
 
 def iterate_first_sizing(aircraft: object):
 	""" Perform one step in the first sizing loop for conventional 
-	helicopter configurations.
+	helicopter configurations. [p. 86]
 
 	Requires:
 		Main rotor
@@ -67,7 +67,7 @@ def iterate_first_sizing(aircraft: object):
 
 def iterate_second_sizing(aircraft: object):
 	""" Perform one step in the second sizing loop for conventional 
-	helicopter configurations.
+	helicopter configurations. [p. 86]
 
 	Requires:
 		Main rotor
@@ -81,9 +81,8 @@ def iterate_second_sizing(aircraft: object):
 	# ---- Tail rotor design [p.204-213] --------------------------------------
 
 	# Tail rotor design according to Layton
-	tr = aircraft.tail_rotor
-	tr.radius = 0.4 * np.sqrt(2.2 * aircraft.mtow / 1000)
-	tr.solidity = tr.get_solidity()
+	aircraft.tail_rotor.radius = 0.4 * np.sqrt(2.2 * aircraft.mtow / 1000)
+	aircraft.tail_rotor.solidity = aircraft.tail_rotor.get_solidity()
 
 	# ---- Refined performance calculation [pp. 251 - 321] --------------------
 
