@@ -6,21 +6,22 @@ Created on 2022-02-08
 """
 
 import numpy as np
+import matplotlib.pyplot as plt
 
 class Mission():
 	"""
 	"""
 	def __init__(self, mission_data: dict):
-		
+
 		self.data         = mission_data
 		self.name         = mission_data['Name']
+		self.duration     = mission_data['Duration'][0]
 		self.payload      = mission_data['Payload'][0]
 		self.crew_mass    = mission_data['Crew mass'][0]
-		self.duration     = mission_data['Duration'][0]
-		self.flight_speed = mission_data['Flight speed'][0]
 		self.climb_angle  = mission_data['Climb angle'][0] * np.pi / 180
-		self.height       = mission_data['Height'][0]
+		self.flight_speed = mission_data['Flight speed'][0]
 		self.temp_offset  = mission_data['Temperature offset'][0]
+		self.height       = mission_data['Height'][0]
 		self.density      = self.get_density()
 
 
@@ -29,13 +30,13 @@ class Mission():
 		E.g. Payload: [600, 550] # kg
 		       -> i =  0,   1
 		"""
+		self.duration     = self.data['Duration'][i]
 		self.payload      = self.data['Payload'][i]
 		self.crew_mass    = self.data['Crew mass'][i]
-		self.duration     = self.data['Duration'][i]
-		self.flight_speed = self.data['Flight speed'][i]
 		self.climb_angle  = self.data['Climb angle'][i] * np.pi / 180
-		self.height       = self.data['Height'][i]
+		self.flight_speed = self.data['Flight speed'][i]
 		self.temp_offset  = self.data['Temperature offset'][i]
+		self.height       = self.data['Height'][i]
 		self.density      = self.get_density()
 
 		
@@ -61,3 +62,50 @@ class Mission():
 
 		# Density [kg m^-3]
 		return pressure / (gas_constant * temperature)
+
+
+	def plot_mission(self):
+		""" Plot height, payload, and crew mass over the duration of the 
+		mission.
+		"""
+		# Figure settings
+		plt.style.use('ggplot')
+		fig, ax = plt.subplots(figsize=(8,5))
+		ax_1 = ax.twinx()	    
+		ax.set_xlabel('Time [h]')
+		ax.grid()
+		ax.set_title(self.name, fontweight='bold')
+		ax.grid(True)
+		ax_1.grid(False)
+
+		# Time list with double elements between segments to plot constant 
+		# parameters, e.g. [0, 2.5, 2.5, 3.5]
+		time = ([0] + [t for t in np.cumsum(self.data['Duration']) 
+		               for _ in (0, 1)][:-1])
+
+		# Constant parameters
+		payload = [m for m in self.data['Payload'] for _ in (0, 1)]
+		crew_mass = [m for m in self.data['Crew mass'] for _ in (0, 1)]
+		flight_speed = [v for v in self.data['Flight speed'] for _ in (0, 1)]
+		
+		# Linear parameters
+		height = [h for h in self.data['Height'] for _ in (0, 1)][1:-1]
+
+		# Plot, axes
+		ax.set_ylabel('Height [m]')
+		p, = ax.plot(time, height, color='C0', label='Height')
+		ax.set_ylim(bottom=0)
+		ax_1.set_ylabel('Mass [kg]')
+		p_1, = ax_1.plot(time, payload, color='C1', label='Payload')
+		p_2, = ax_1.plot(time, crew_mass, color='C2', label='Crew mass')
+		ax_1.set_ylim(bottom=0)
+		plt.tick_params(right=False, labelright=True)
+
+		# Legend
+		plots = [p, p_1, p_2]
+		legend = ax.legend(handles=plots, loc='center left')
+		for text in legend.get_texts(): text.set_color('#444444')
+
+		# Layout
+		fig.tight_layout()
+		plt.show()

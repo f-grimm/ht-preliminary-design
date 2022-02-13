@@ -44,10 +44,13 @@ Mission:
 
    Name: Rescue
 
-   Payload: [600, 550] # kg
-   Crew mass: [230, 230] # kg
+   # Constant within segment
    Duration: [2.5, 1] # h
-   Flight speed: [70, 60] # ms^-1
+   Payload: [20, 150] # kg
+   Crew mass: [230, 230] # kg
    Climb angle: [30, 0] # deg
-   Height: [10, 10000] # m
+   Flight speed: [70, 0] # ms^-1
    Temperature offset: [0, 0] # °C
+   
+   # Linear with defined points
+   Height: [20, 20, 100] # m
