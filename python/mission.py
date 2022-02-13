@@ -14,13 +14,13 @@ class Mission():
 		
 		self.data         = mission_data
 		self.name         = mission_data['Name']
-		self.payload      = self.data['Payload'][0]
-		self.crew_mass    = self.data['Crew mass'][0]
-		self.duration     = self.data['Duration'][0]
-		self.flight_speed = self.data['Flight speed'][0]
-		self.climb_angle  = self.data['Climb angle'][0] * np.pi / 180
-		self.height       = self.data['Height'][0]
-		self.temp_offset  = self.data['Temperature offset'][0]
+		self.payload      = mission_data['Payload'][0]
+		self.crew_mass    = mission_data['Crew mass'][0]
+		self.duration     = mission_data['Duration'][0]
+		self.flight_speed = mission_data['Flight speed'][0]
+		self.climb_angle  = mission_data['Climb angle'][0] * np.pi / 180
+		self.height       = mission_data['Height'][0]
+		self.temp_offset  = mission_data['Temperature offset'][0]
 		self.density      = self.get_density()
 
 
