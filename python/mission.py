@@ -69,11 +69,9 @@ class Mission():
 		mission.
 		"""
 		# Figure settings
-		plt.style.use('default')
 		fig, ax = plt.subplots(figsize=(8,5))
-		ax_1 = ax.twinx()	    
-		ax.grid()
 		ax.set_title(self.name, fontweight='bold')
+		ax_1 = ax.twinx()
 		ax.grid(True)
 		ax_1.grid(False)
 
@@ -81,28 +79,21 @@ class Mission():
 		# parameters, e.g. [0, 2.5, 2.5, 3.5]
 		time = ([0] + [t for t in np.cumsum(self.data['Duration']) 
 		               for _ in (0, 1)][:-1])
-		hours = np.floor(time[-1])
-		minutes = (time[-1] - hours) * 60
 
 		# Constant parameters
 		payload = [m for m in self.data['Payload'] for _ in (0, 1)]
-		flight_speed = [v for v in self.data['Flight speed'] for _ in (0, 1)]
 		
 		# Linear parameters
 		height = [h for h in self.data['Height'] for _ in (0, 1)][1:-1]
 
 		# Plot, axes
-		ax.set_xlabel('Mission points over time '
-		             + f'(total: {hours:.0f}h {minutes:.0f}m)')
+		ax.set_xlabel('Time [h]')
 		ax.set_ylabel('Height [m]')
 		p, = ax.plot(time, height, color='tab:red', label='Height')
 		ax.set_ylim(bottom=0)
 		ax_1.set_ylabel('Mass [kg]')
 		p_1, = ax_1.plot(time, payload, color='tab:blue', label='Payload')
 		ax_1.set_ylim(bottom=0, top=max(payload) / 0.5)
-		mission_points = list(dict.fromkeys(time))
-		ax.set_xticks(mission_points)
-		ax.set_xticklabels(range(len(mission_points)))
 		
 		# Legend
 		plots = [p, p_1]
