@@ -17,3 +17,5 @@ aircraft = Aircraft('concept_01.yaml')
 # Start premilinary design
 preliminary_design(aircraft, logs=True)
 
+# Plot mission profile
+aircraft.mission.plot_mission()
