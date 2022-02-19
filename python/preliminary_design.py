@@ -177,7 +177,7 @@ def plot_powers(aircraft: object, max_velocity):
 
 		# Flight state
 		aircraft.mission.flight_speed = V
-		aircraft.advance_ratio = V / aircraft.main_rotor.tip_velocity
+		advance_ratio = V / aircraft.main_rotor.tip_velocity
 		induced_velocity = aircraft.main_rotor.get_induced_velocity_level(
 			aircraft.mission.density, V, thrust=weight)
 
@@ -185,7 +185,7 @@ def plot_powers(aircraft: object, max_velocity):
 		P_i.append(aircraft.main_rotor.kappa * weight * induced_velocity 
 		           * 1e-3)
 		P_0.append(aircraft.main_rotor.get_profile_power(
-			aircraft.mission.density, aircraft.advance_ratio) * 1e-3)
+			aircraft.mission.density, advance_ratio) * 1e-3)
 		P_p.append(aircraft.get_parasite_power() * 1e-3)
 		main_rotor_power = P_i[-1] + P_0[-1] + P_p[-1]
 		P_tr.append(0.05 * main_rotor_power)
