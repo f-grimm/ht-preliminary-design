@@ -35,6 +35,7 @@ class Aircraft:
 		self.gravity            = data['Misc']['Gravity']
 		self.mtow               = 0
 		self.alpha              = 0
+		self.drag               = 0
 
 
 	def get_parasite_power(self):
@@ -64,23 +65,24 @@ class Aircraft:
 		        * self.drag_area)
 
 
-	def get_thrust(self, drag):
+	def get_thrust(self):
 		""" Calculate the required thrust in translatory motion.
 		"""
 		weight = self.mtow * self.gravity
 
 		# Thrust [N]
-		return ((drag + weight * (np.sin(self.mission.climb_angle) 
+		return ((self.drag + weight * (np.sin(self.mission.climb_angle) 
 		         + np.cos(self.mission.climb_angle))) 
 		        / (np.sin(self.alpha) + np.cos(self.alpha)))
 
 
-	def get_angle_of_attack(self, drag):
+	def get_angle_of_attack(self):
 		""" Calculate the angle of attack based on a force balance with thrust,
 		weight, and fuselage drag.
 		"""
 		weight = self.mtow * self.gravity
 
 		# Angle of attack [rad]
-		return np.arctan((drag + weight * np.sin(self.mission.climb_angle)) 
-		                 / (weight * np.cos(self.mission.climb_angle)))
+		return np.arctan(
+			(self.drag + weight * np.sin(self.mission.climb_angle)) 
+			/ (weight * np.cos(self.mission.climb_angle)))
