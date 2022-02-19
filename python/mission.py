@@ -23,6 +23,7 @@ class Mission():
 		self.temp_offset  = mission_data['Temperature offset'][0]
 		self.height       = mission_data['Height'][0]
 		self.density      = self.get_density()
+		self.segment      = 0
 
 
 	def set_mission_segment(self, i):
@@ -38,6 +39,7 @@ class Mission():
 		self.temp_offset  = self.data['Temperature offset'][i]
 		self.height       = self.data['Height'][i]
 		self.density      = self.get_density()
+		self.segment      = i
 
 		
 	def get_density(self):
@@ -70,7 +72,7 @@ class Mission():
 		"""
 		# Figure settings
 		fig, ax = plt.subplots(figsize=(8,5))
-		ax.set_title(self.name, fontweight='bold')
+		ax.set_title('Mission: ' + self.name, fontweight='bold')
 		ax_1 = ax.twinx()
 		ax.grid(True)
 		ax_1.grid(False)
