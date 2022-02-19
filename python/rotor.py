@@ -32,25 +32,36 @@ class Rotor:
 
 
 	def get_induced_velocity(self, density, v_inf, alpha, thrust):
-		""" Calculate the induced velocity in forward flight (not valid for 
-		low sink rate in axial flight) [p. 253]
+		""" Calculate the induced velocity iteratively in forward flight (not 
+		valid for low sink rate in axial flight) [p. 253]
 		"""
 		area = np.pi * self.radius ** 2
 		v_i = np.sqrt(thrust / (2 * density * area))
 		counter = 0
 		error = 1
 
-		while error > 0.01:
+		while error > 1e-5:
 			combined_velocity = np.sqrt(
 				v_inf ** 2 - 2 * v_inf * v_i * np.sin(alpha) + v_i ** 2)
 			v_i_new = thrust / (2 * density * area * combined_velocity)
 			error = abs((v_i_new - v_i) / v_i)
 			v_i = v_i_new
 			counter += 1
-			if counter > 100: raise ValueError('No convergence.')
+			if counter > 1e6: raise ValueError('No convergence.')
 
 		# Induced velocity [m s^-1]
 		return v_i
+
+
+	def get_induced_velocity_level(self, density, v_inf, thrust):
+		""" Calculate the induced velocity using the approximate solution for 
+		level flight (W >> D). [p. 254]
+		"""
+		v_h = np.sqrt(thrust / (2 * density * np.pi * self.radius ** 2))
+
+		# Induced velocity [m s^-1]
+		return np.sqrt(-0.5 * v_inf ** 2 
+		               + np.sqrt(v_h ** 4 + 0.25 * v_inf ** 4))
 
 
 	def get_profile_power(self, density, advance_ratio):
