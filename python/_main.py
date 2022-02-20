@@ -11,7 +11,7 @@ from preliminary_design import preliminary_design, plot_powers
 """
 """
 
-# Create aircraft object with initial values from YAML file
+# Create aircraft with initial values from YAML file
 aircraft = Aircraft('concept_01.yaml')
 
 # Start premilinary design
