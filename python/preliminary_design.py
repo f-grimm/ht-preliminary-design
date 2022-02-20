@@ -8,6 +8,9 @@ Created on 2022-02-12
 import numpy as np
 import matplotlib.pyplot as plt
 
+"""
+"""
+
 def get_initial_mtow(aircraft: object):
 	""" Estimate the initial maximum take-off weight based on the mission 
 	profile. [p.90-91]
