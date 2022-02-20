@@ -20,6 +20,9 @@ class Rotor:
 		self.zero_lift_drag_coeff = rotor_data['Zero-lift drag coeff.']
 		self.tip_velocity         = rotor_data['Tip velocity']
 
+		if 'Power fraction' in rotor_data:
+			self.power_fraction = rotor_data['Power fraction']
+
 
 	def get_induced_power_hover(self, density, thrust):
 		""" Calculate the induced power in hover.
@@ -40,7 +43,7 @@ class Rotor:
 		counter = 0
 		error = 1
 
-		while error > 1e-5:
+		while error > 1e-4:
 			combined_velocity = np.sqrt(
 				v_inf ** 2 - 2 * v_inf * v_i * np.sin(alpha) + v_i ** 2)
 			v_i_new = thrust / (2 * density * area * combined_velocity)
