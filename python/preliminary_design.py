@@ -139,11 +139,11 @@ def preliminary_design(aircraft: object, mission_segment: int, logs=True):
 		print(f'\nAicraft: {aircraft.name}')
 		print(f'Mission: {aircraft.mission.name}')
 		print(f'Segment: {aircraft.mission.segment} '
-		      + f'({aircraft.mission.height:.2f}m, '
-		      + f'{aircraft.mission.flight_speed:.2f}m/s)')
+		      + f'({aircraft.mission.height:.0f}m, '
+		      + f'{aircraft.mission.duration:.2f}h, '
+		      + f'{aircraft.mission.flight_speed:.0f}m/s)')
 		print(f'\nEstimate initial MTOW'
 		      + f'\n(SFC {aircraft.sfc * 1e3:.2f}, '
-		      + f'{aircraft.mission.duration:.2f}h, '
 		      + f'EWR {aircraft.empty_weight_ratio:.2f})')
 
 	aircraft.mtow = get_initial_mtow(aircraft)
@@ -165,13 +165,13 @@ def preliminary_design(aircraft: object, mission_segment: int, logs=True):
 	iterate_second_sizing(aircraft)
 
 	if logs:
-		print(f'\n - Drag: {aircraft.drag:27.2f} N')
+		print(f'\n - Tail rotor radius: {aircraft.tail_rotor.radius:14.2f} m')
+		print(f' - Drag: {aircraft.drag:27.2f} N')
 		print(f' - Thrust: {aircraft.thrust:25.2f} N')
 		print(f' - Angle of attack: {aircraft.alpha * 180 / np.pi:16.2f} deg')
 		print(f' - Advance ratio: {aircraft.advance_ratio:18.2f} -')
 		print(' - Induced velocity: '
 		      + f'{aircraft.main_rotor.induced_velocity:15.2f} m/s')
-		print(f' - Tail rotor radius: {aircraft.tail_rotor.radius:14.2f} m')
 		print('')
 
 
