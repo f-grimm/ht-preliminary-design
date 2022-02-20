@@ -8,22 +8,20 @@ Created on 2022-01-30
 import numpy as np
 import yaml
 import rotor
-import mission
+import mission as mission_module
 
 class Aircraft:
 	"""
 	"""
-	def __init__(self, filename):
+	def __init__(self, filename, mission):
 		# Load aircraft data from YAML file
-		with open('configurations/' + filename) as file:
+		with open('configurations/' + filename + '.yaml') as file:
 			data = yaml.safe_load(file)
 
 		if 'Main rotor' in data:
 			self.main_rotor = rotor.Rotor(data['Main rotor'])
 		if 'Tail rotor' in data:
 			self.tail_rotor = rotor.Rotor(data['Tail rotor'])
-		if 'Mission' in data:
-			self.mission = mission.Mission(data['Mission'])
 
 		self.power_available    = data['Engine']['Power available']
 		self.accessory_power    = data['Engine']['Accessory power']
@@ -36,6 +34,12 @@ class Aircraft:
 		self.mtow               = 0
 		self.alpha              = 0
 		self.drag               = 0
+
+		# Load mission data from YAML file
+		with open('configurations/missions/' + mission + '.yaml') as file:
+			mission_data = yaml.safe_load(file)
+
+		self.mission = mission_module.Mission(mission_data)
 
 
 	def get_parasite_power(self):
