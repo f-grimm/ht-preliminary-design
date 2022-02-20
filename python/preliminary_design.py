@@ -96,20 +96,21 @@ def iterate_second_sizing(aircraft: object):
 	aircraft.thrust = aircraft.get_thrust()
 	aircraft.advance_ratio = (aircraft.mission.flight_speed 
 	                          / aircraft.main_rotor.tip_velocity)
-	induced_velocity = aircraft.main_rotor.get_induced_velocity(
-		aircraft.mission.density, aircraft.mission.flight_speed, 
-		aircraft.alpha, aircraft.thrust)
+	aircraft.main_rotor.induced_velocity = (
+		aircraft.main_rotor.get_induced_velocity(
+			aircraft.mission.density, aircraft.mission.flight_speed, 
+			aircraft.alpha, aircraft.thrust))
 
 	# Power calculation
 	induced_power = (aircraft.main_rotor.kappa * aircraft.thrust 
-	                 * induced_velocity)
+	                 * aircraft.main_rotor.induced_velocity)
 	profile_power = aircraft.main_rotor.get_profile_power(
 		aircraft.mission.density, aircraft.advance_ratio)
 	parasite_power = aircraft.get_parasite_power()
 	climb_power = aircraft.get_climb_power()
 	main_rotor_power = (induced_power + profile_power + parasite_power 
 	                    + climb_power)
-	tail_rotor_power = 0.05 * main_rotor_power
+	tail_rotor_power = aircraft.tail_rotor.power_fraction * main_rotor_power
 	transmission_losses = (((1 / aircraft.eta_transmission) - 1) 
 	                       * main_rotor_power)
 	total_power = (main_rotor_power + tail_rotor_power + transmission_losses 
@@ -121,7 +122,7 @@ def iterate_second_sizing(aircraft: object):
 	# Mass estimation incl. fuel
 
 
-def preliminary_design(aircraft: object, logs=True):
+def preliminary_design(aircraft: object, mission_segment: int, logs=True):
 	""" Preliminary design of conventional helicopter configurations.
 
 	Requires:
@@ -131,6 +132,8 @@ def preliminary_design(aircraft: object, logs=True):
 	TODO:
 		Design loop
 	"""
+	aircraft.mission.set_mission_segment(mission_segment)
+
 	if logs:
 		print('\nPreliminary Design\n' + '-' * 18)
 		print(f'\nMission segment: {aircraft.mission.segment} '
@@ -159,7 +162,13 @@ def preliminary_design(aircraft: object, logs=True):
 	iterate_second_sizing(aircraft)
 
 	if logs:
-		print(f'\n - Tail rotor radius: {aircraft.tail_rotor.radius:14.2f} m')
+		print(f'\n - Drag: {aircraft.drag:27.2f} N')
+		print(f' - Thrust: {aircraft.thrust:25.2f} N')
+		print(f' - Angle of attack: {aircraft.alpha * 180 / np.pi:16.2f} deg')
+		print(f' - Advance ratio: {aircraft.advance_ratio:18.2f} -')
+		print(' - Induced velocity: '
+		      + f'{aircraft.main_rotor.induced_velocity:15.2f} m/s')
+		print(f' - Tail rotor radius: {aircraft.tail_rotor.radius:14.2f} m')
 		print('')
 
 
@@ -191,7 +200,7 @@ def plot_powers(aircraft: object, max_velocity):
 			aircraft.mission.density, advance_ratio) * 1e-3)
 		P_p.append(aircraft.get_parasite_power() * 1e-3)
 		main_rotor_power = P_i[-1] + P_0[-1] + P_p[-1]
-		P_tr.append(0.05 * main_rotor_power)
+		P_tr.append(aircraft.tail_rotor.power_fraction * main_rotor_power)
 		P_tl.append(((1 / aircraft.eta_transmission) - 1) * main_rotor_power)
 		P_a.append(aircraft.accessory_power * 1e-3)
 		P.append(main_rotor_power + P_tr[-1] + P_tl[-1] + P_a[-1])
