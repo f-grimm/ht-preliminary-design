@@ -136,8 +136,11 @@ def preliminary_design(aircraft: object, mission_segment: int, logs=True):
 
 	if logs:
 		print('\nPreliminary Design\n' + '-' * 18)
-		print(f'\nMission segment: {aircraft.mission.segment} '
-		      + f'({aircraft.mission.height:.2f}m)')
+		print(f'\nAicraft: {aircraft.name}')
+		print(f'Mission: {aircraft.mission.name}')
+		print(f'Segment: {aircraft.mission.segment} '
+		      + f'({aircraft.mission.height:.2f}m, '
+		      + f'{aircraft.mission.flight_speed:.2f}m/s)')
 		print(f'\nEstimate initial MTOW'
 		      + f'\n(SFC {aircraft.sfc * 1e3:.2f}, '
 		      + f'{aircraft.mission.duration:.2f}h, '
@@ -193,7 +196,7 @@ def plot_powers(aircraft: object, max_velocity):
 		induced_velocity = aircraft.main_rotor.get_induced_velocity_level(
 			aircraft.mission.density, V, thrust=weight)
 
-		# Power calculation
+		# Power calculation [kW]
 		P_i.append(aircraft.main_rotor.kappa * weight * induced_velocity 
 		           * 1e-3)
 		P_0.append(aircraft.main_rotor.get_profile_power(
