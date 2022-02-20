@@ -22,6 +22,7 @@ Tail rotor:
    Kappa: 1.15 # -
    Zero-lift drag coeff.: 0.011 # -
    Tip velocity: 213 # ms^-1
+   Power fraction: 0.05
 
 Engine:
 
@@ -32,25 +33,10 @@ Engine:
 Fuselage:
 
    Download factor: 0.05 # -
-   Drag area: 2 # m^2
+   Drag area: 1.2 # m^2
 
 Misc:
 
    Empty weight ratio: 0.5
    Transmission efficiency: 0.98
    Gravity: 9.81 # ms^-2
-
-Mission:
-
-   Name: Exercise 9
-
-   # Constant within segment
-   Duration: [0.1, 0.067, 0.5, 0.2, 0.046, 0.77] # h
-   Payload: [0, 0, 0, 170, 170, 0] # kg
-   Crew mass: [230, 230, 230, 230, 230, 230] # kg
-   Climb angle: [0, 5.93, 0, 0, -5.7, 0] # deg
-   Flight speed: [0, 60, 75.1, 0, 60, 54] # ms^-1
-   Temperature offset: [0, 0, 0, 0, 0, 0] # °C
-   
-   # Linear with defined points
-   Height: [0, 0, 1500, 1500, 1500, 500, 500] # m
