@@ -33,7 +33,7 @@ Engine:
 Fuselage:
 
    Download factor: 0.05 # -
-   Drag area: 1.2 # m^2
+   Drag area: 1.5 # m^2
 
 Misc:
 
