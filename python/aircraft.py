@@ -67,13 +67,16 @@ class Aircraft:
 
 	def get_thrust(self):
 		""" Calculate the required thrust in translatory motion.
+		Eq.:
+			T sin(-alpha) = D + W sin(gamma)   (1) +
+			T cos(-alpha) = W cos(gamma)       (2)
 		"""
 		weight = self.mtow * self.gravity
 
 		# Thrust [N]
 		return ((self.drag + weight * (np.sin(self.mission.climb_angle) 
 		         + np.cos(self.mission.climb_angle))) 
-		        / (np.sin(self.alpha) + np.cos(self.alpha)))
+		        / (np.cos(self.alpha) - np.sin(self.alpha)))
 
 
 	def get_angle_of_attack(self):
@@ -83,6 +86,6 @@ class Aircraft:
 		weight = self.mtow * self.gravity
 
 		# Angle of attack [rad]
-		return np.arctan(
+		return - np.arctan(
 			(self.drag + weight * np.sin(self.mission.climb_angle)) 
 			/ (weight * np.cos(self.mission.climb_angle)))
