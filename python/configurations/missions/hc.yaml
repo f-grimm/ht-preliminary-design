@@ -1,0 +1,15 @@
+
+Name: Hover and Cruise
+
+Mission:
+
+   # Constant within segment
+   Duration: [1, 3] # h
+   Payload: [100, 100] # kg
+   Crew mass: [230, 230] # kg
+   Climb angle: [0, 0] # deg
+   Flight speed: [0, 75] # ms^-1
+   Temperature offset: [0, 0] # °C
+   
+   # Linear with defined points
+   Height: [0, 0, 0] # m
