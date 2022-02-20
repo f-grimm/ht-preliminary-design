@@ -13,7 +13,7 @@ import mission as mission_module
 class Aircraft:
 	"""
 	"""
-	def __init__(self, filename, mission):
+	def __init__(self, filename: str, mission: str):
 		# Load aircraft data from YAML file
 		with open('configurations/' + filename + '.yaml') as file:
 			data = yaml.safe_load(file)
@@ -23,6 +23,7 @@ class Aircraft:
 		if 'Tail rotor' in data:
 			self.tail_rotor = rotor.Rotor(data['Tail rotor'])
 
+		self.name               = data['Name']
 		self.power_available    = data['Engine']['Power available']
 		self.accessory_power    = data['Engine']['Accessory power']
 		self.sfc                = data['Engine']['SFC'] / 1000
