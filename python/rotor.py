@@ -24,6 +24,20 @@ class Rotor:
 			self.power_fraction = rotor_data['Power fraction']
 
 
+	def get_solidity(self):
+		""" Calculate the rotor solidity (rectangular approximation).
+		"""
+		# Solidity [-]
+		return self.number_of_blades * self.chord / (np.pi * self.radius)
+
+
+	def get_disc_loading(self, thrust):
+		""" Calculate the disc loading.
+		"""
+		# Disc loading [N m^-2]
+		return thrust / (np.pi * self.radius ** 2)
+
+
 	def get_induced_power_hover(self, density, thrust):
 		""" Calculate the induced power in hover.
 		"""
@@ -87,15 +101,11 @@ class Rotor:
 		          ** (1 / 3))
 
 
-	def get_solidity(self):
-		""" Calculate the rotor solidity (rectangular approximation).
+	def in_ground_effect(self, induced_power_oge):
+		""" Calculate the required hover power in ground effect (IGE) according 
+		to Hayden. [p. 288]
 		"""
-		# Solidity [-]
-		return self.number_of_blades * self.chord / (np.pi * self.radius)
+		k_G = 1 / (0.9926 + 0.0379 * (2 * self.radius / rotor_height) ** 2)
 
-
-	def get_disc_loading(self, thrust):
-		""" Calculate the disc loading.
-		"""
-		# Disc loading [N m^-2]
-		return thrust / (np.pi * self.radius ** 2)
+		# Power in ground effect [W]
+		return k_G * induced_power_oge
