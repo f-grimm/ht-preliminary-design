@@ -101,7 +101,7 @@ class Rotor:
 		          ** (1 / 3))
 
 
-	def in_ground_effect(self, induced_power_oge):
+	def in_ground_effect(self, induced_power_oge, rotor_height):
 		""" Calculate the required hover power in ground effect (IGE) according 
 		to Hayden. [p. 288]
 		"""
