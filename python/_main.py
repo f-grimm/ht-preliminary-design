@@ -15,7 +15,7 @@ from preliminary_design import preliminary_design, plot_powers
 aircraft = Aircraft('concept_01', mission='hover_cruise')
 
 # Start premilinary design
-preliminary_design(aircraft, mission_segment=0, logs=True)
+preliminary_design(aircraft, mission_segment=1, logs=True)
 
 # Plot mission profile
 # aircraft.mission.plot_mission()
