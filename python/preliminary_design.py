@@ -11,6 +11,59 @@ import matplotlib.pyplot as plt
 """
 """
 
+def preliminary_design(aircraft: object, mission_segment: int, logs=True):
+	""" Preliminary design of conventional helicopter configurations.
+
+	Requires:
+		Main rotor
+		Tail rotor
+
+	TODO:
+		Design loop
+	"""
+	aircraft.mission.set_mission_segment(mission_segment)
+
+	if logs:
+		print('\nPreliminary Design\n' + '-' * 18)
+		print(f'\nAicraft: {aircraft.name}')
+		print(f'Mission: {aircraft.mission.name}')
+		print(f'Segment: {aircraft.mission.segment} '
+		      + f'({aircraft.mission.height:.0f}m, '
+		      + f'{aircraft.mission.duration:.2f}h, '
+		      + f'{aircraft.mission.flight_speed:.0f}m/s)')
+		print(f'\nEstimate initial MTOW'
+		      + f'\n(SFC {aircraft.sfc * 1e3:.2f}, '
+		      + f'EWR {aircraft.empty_weight_ratio:.2f})')
+
+	aircraft.mtow = get_initial_mtow(aircraft)
+		
+	if logs:
+		print(f'\n - MTOW: {aircraft.mtow:27.2f} kg')
+		print('\nIterate first sizing'
+		      + '\n(Hover, min. power)')
+
+	iterate_first_sizing(aircraft)
+
+	if logs:
+		print(f'\n - Main rotor radius: {aircraft.main_rotor.radius:14.2f} m')
+		print(f' - Hover power: {(aircraft.hover_power * 1e-3):20.2f} kW')
+		print(f' - MTOW: {aircraft.mtow:27.2f} kg')
+		print('\nIterate second sizing'
+		      + '\n(Refined performance)')
+
+	iterate_second_sizing(aircraft)
+
+	if logs:
+		print(f'\n - Tail rotor radius: {aircraft.tail_rotor.radius:14.2f} m')
+		print(f' - Drag: {aircraft.drag:27.2f} N')
+		print(f' - Thrust: {aircraft.thrust:25.2f} N')
+		print(f' - Angle of attack: {aircraft.alpha * 180 / np.pi:16.2f} deg')
+		print(f' - Advance ratio: {aircraft.advance_ratio:18.2f} -')
+		print(' - Induced velocity: '
+		      + f'{aircraft.main_rotor.induced_velocity:15.2f} m/s')
+		print('')
+
+
 def get_initial_mtow(aircraft: object):
 	""" Estimate the initial maximum take-off weight based on the mission 
 	profile. [p.90-91]
@@ -81,6 +134,7 @@ def iterate_second_sizing(aircraft: object):
 		Solidity: Empirical reference instead of constant chord.
 		How should the download factor be considered? What counts as slow
 			flight?
+		Engine calc., SFC = f(P) [p. 310], mass estimation
 	"""
 	# ---- Tail rotor design [p.204-213] --------------------------------------
 
@@ -122,57 +176,14 @@ def iterate_second_sizing(aircraft: object):
 	# Mass estimation incl. fuel
 
 
-def preliminary_design(aircraft: object, mission_segment: int, logs=True):
-	""" Preliminary design of conventional helicopter configurations.
-
-	Requires:
-		Main rotor
-		Tail rotor
-
-	TODO:
-		Design loop
+def mass_estimation(aircraft: object):
+	""" Estimate component masses of medium helicopters. [pp. 408-416]
 	"""
-	aircraft.mission.set_mission_segment(mission_segment)
-
-	if logs:
-		print('\nPreliminary Design\n' + '-' * 18)
-		print(f'\nAicraft: {aircraft.name}')
-		print(f'Mission: {aircraft.mission.name}')
-		print(f'Segment: {aircraft.mission.segment} '
-		      + f'({aircraft.mission.height:.0f}m, '
-		      + f'{aircraft.mission.duration:.2f}h, '
-		      + f'{aircraft.mission.flight_speed:.0f}m/s)')
-		print(f'\nEstimate initial MTOW'
-		      + f'\n(SFC {aircraft.sfc * 1e3:.2f}, '
-		      + f'EWR {aircraft.empty_weight_ratio:.2f})')
-
-	aircraft.mtow = get_initial_mtow(aircraft)
-		
-	if logs:
-		print(f'\n - MTOW: {aircraft.mtow:27.2f} kg')
-		print('\nIterate first sizing'
-		      + '\n(Hover, min. power)')
-
-	iterate_first_sizing(aircraft)
-
-	if logs:
-		print(f'\n - Main rotor radius: {aircraft.main_rotor.radius:14.2f} m')
-		print(f' - Hover power: {(aircraft.hover_power * 1e-3):20.2f} kW')
-		print(f' - MTOW: {aircraft.mtow:27.2f} kg')
-		print('\nIterate second sizing'
-		      + '\n(Refined performance)')
-
-	iterate_second_sizing(aircraft)
-
-	if logs:
-		print(f'\n - Tail rotor radius: {aircraft.tail_rotor.radius:14.2f} m')
-		print(f' - Drag: {aircraft.drag:27.2f} N')
-		print(f' - Thrust: {aircraft.thrust:25.2f} N')
-		print(f' - Angle of attack: {aircraft.alpha * 180 / np.pi:16.2f} deg')
-		print(f' - Advance ratio: {aircraft.advance_ratio:18.2f} -')
-		print(' - Induced velocity: '
-		      + f'{aircraft.main_rotor.induced_velocity:15.2f} m/s')
-		print('')
+	m_main_rotor = (33 * aircraft.main_rotor.radius * aircraft.main_rotor.chord 
+	                * aircraft.main_rotor.number_of_blades + 16)
+	m_tail_rotor = 0.003942 * aircraft.mtow + 5.66
+	m_fuselage_tail = 0.11907 * aircraft.mtow - 66.666
+	# m_landing_gear = ...
 
 
 def plot_powers(aircraft: object, max_velocity):
