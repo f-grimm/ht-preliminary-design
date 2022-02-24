@@ -14,10 +14,6 @@ import matplotlib.pyplot as plt
 def preliminary_design(aircraft: object, mission_segment: int, logs=True):
 	""" Preliminary design of conventional helicopter configurations.
 
-	Requires:
-		Main rotor
-		Tail rotor
-
 	TODO:
 		Design loop
 	"""
@@ -81,9 +77,6 @@ def iterate_first_sizing(aircraft: object):
 	""" Perform one step in the first sizing loop for conventional 
 	helicopter configurations. [p. 86]
 
-	Requires:
-		Main rotor
-
 	TODO: 
 		Solidity: Blade loading diagram instead of constant chord.
 		EW models [Prouty]
@@ -98,7 +91,7 @@ def iterate_first_sizing(aircraft: object):
 
 	# ---- Preliminary performance estimation [p.175] -------------------------
 
-	# Hover power as first estimate
+	# Hover power
 	induced_power = aircraft.main_rotor.get_induced_power_hover(
 		aircraft.mission.density, thrust=weight)
 	profile_power = aircraft.main_rotor.get_profile_power(
@@ -107,12 +100,12 @@ def iterate_first_sizing(aircraft: object):
 
 	# ---- Mass estimation incl. fuel [p.177-179] -----------------------------
 
-	# Empty weight estimation, fuel demand in hover
-	empty_weight = aircraft.empty_weight_ratio * aircraft.mtow
-	fuel_mass = (aircraft.sfc * 1.1 * aircraft.hover_power 
-	             * aircraft.mission.duration)
-	aircraft.mtow = (empty_weight + fuel_mass + aircraft.mission.payload 
-	                 + aircraft.mission.crew_mass)
+	# Fuel demand in hover, empty weight
+	aircraft.fuel_mass = (aircraft.sfc * 1.1 * aircraft.hover_power 
+	                      * aircraft.mission.duration)
+	aircraft.empty_weight = sum(mass_estimation(aircraft).values())
+	aircraft.mtow = (aircraft.empty_weight + aircraft.fuel_mass 
+	                 + aircraft.mission.payload + aircraft.mission.crew_mass)
 
 	# Disc loading and FM [p.181-183]
 	weight = aircraft.mtow * aircraft.gravity
@@ -126,10 +119,6 @@ def iterate_second_sizing(aircraft: object):
 	""" Perform one step in the second sizing loop for conventional 
 	helicopter configurations. [p. 86]
 
-	Requires:
-		Main rotor
-		Tail rotor
-
 	TODO: 
 		Solidity: Empirical reference instead of constant chord.
 		How should the download factor be considered? What counts as slow
@@ -139,7 +128,7 @@ def iterate_second_sizing(aircraft: object):
 	# ---- Tail rotor design [p.204-213] --------------------------------------
 
 	# Tail rotor design according to Layton
-	aircraft.tail_rotor.radius = 0.4 * np.sqrt(2.2 * aircraft.mtow / 1000)
+	aircraft.tail_rotor.radius = 0.4 * np.sqrt(2.2 * aircraft.mtow * 1e-3)
 	aircraft.tail_rotor.solidity = aircraft.tail_rotor.get_solidity()
 
 	# ---- Refined performance calculation [pp. 251 - 321] --------------------
@@ -178,12 +167,52 @@ def iterate_second_sizing(aircraft: object):
 
 def mass_estimation(aircraft: object):
 	""" Estimate component masses of medium helicopters. [pp. 408-416]
+
+	Requires:
+		Hover power (aircraft.hover_power)
+		Fuel mass (aircraft.fuel_mass)
 	"""
-	m_main_rotor = (33 * aircraft.main_rotor.radius * aircraft.main_rotor.chord 
-	                * aircraft.main_rotor.number_of_blades + 16)
-	m_tail_rotor = 0.003942 * aircraft.mtow + 5.66
-	m_fuselage_tail = 0.11907 * aircraft.mtow - 66.666
-	# m_landing_gear = ...
+	# Wetted fuselage surface [m^2]
+	wetted_surface = 59.09386 * np.exp(0.0000194463 * aircraft.mtow)
+	
+	# Mass estimation [kg]
+	m_mr = (33 * aircraft.main_rotor.radius * aircraft.main_rotor.chord 
+	        * aircraft.main_rotor.number_of_blades + 16)
+	m_tr = 0.003942 * aircraft.mtow + 5.66
+	m_fus_t = 0.11907 * aircraft.mtow - 66.666
+	m_prop = 1.83 * (133.8 + 0.1156 * aircraft.hover_power * 1e-3)
+	m_drive = (0.00000166 * (0.9 * aircraft.mtow) ** 2 
+	           + 0.087780096 * aircraft.mtow - 113.81241656)
+	m_tanks = 164.751 * np.log(aircraft.fuel_mass / 2.948) - 751.33
+	m_fcs = 95.6368 * np.exp(0.000111114 * aircraft.mtow)
+	m_i = 25.444 * np.log(aircraft.hover_power / 0.7457e3) - 141.62
+	m_hyd = 0.003258 * aircraft.mtow + 5.24
+	m_el = 218.496 * np.log(wetted_surface / 0.092903) - 1267.49
+	m_av = 113.4 + aircraft.special_equipment
+	m_furn = 0.854 * wetted_surface + 9.98 * aircraft.number_of_seats - 4.54
+	m_ac_ai = 55.542 * np.log(10.7369 * wetted_surface) - 331.21
+	m_l_h = 38
+	
+	# Landing gear (default: skids)
+	if aircraft.landing_gear_type == 'Skids':
+		m_lg = (0.011113004 * (0.9 * aircraft.mtow / 0.453592) ** 0.8606 
+		        * aircraft.main_rotor.number_of_blades ** 0.8046)
+	elif aircraft.landing_gear_type == 'Rigid wheels':
+		m_lg = (0.187333496 * (0.9 * aircraft.mtow / 0.453592) ** 0.6662 
+		        * aircraft.number_of_legs ** 0.536)
+	elif aircraft.landing_gear_type == 'Retractable wheels':
+		m_lg = (0.187333496 * (0.9 * aircraft.mtow / 0.453592) ** 0.6662 
+		        * 2 ** 0.1198 * n_legs ** 0.536)
+	else: raise ValueError('Invalid landing gear type.')
+
+	# Empty weight components [kg]
+	return {
+		'main rotor': m_mr, 'tail rotor': m_tr, 'fuselage and tail': m_fus_t, 
+		'landing gear': m_lg, 'engines': m_prop, 'transmission': m_drive, 
+		'fuel tanks': m_tanks, 'flight control systems': m_fcs, 
+		'instruments': m_i, 'hydraulic systems': m_hyd, 
+		'electrical systems': m_el, 'avionics': m_av, 'furnishing': m_furn,
+		'air conditioning/anti-ice': m_ac_ai, 'loading and handling': m_l_h}
 
 
 def plot_powers(aircraft: object, max_velocity):
