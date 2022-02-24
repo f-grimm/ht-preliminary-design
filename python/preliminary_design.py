@@ -35,35 +35,31 @@ def preliminary_design(aircraft: object, mission_segment: int, logs=True):
 		
 	if logs:
 		print(f'\n - MTOW: {aircraft.mtow:27.2f} kg')
-		print('\nIterate first sizing'
-		      + '\n(Hover, min. power)')
+		print('\nEnter design loop')
 
-	iterate_first_sizing(aircraft)
+	mtow_list = separate_loops(aircraft)
 
 	if logs:
+		print(f'Iterations: {len(mtow_list) - 1}')
 		print(f'\n - Main rotor radius: {aircraft.main_rotor.radius:14.2f} m')
+		print(f' - Tail rotor radius: {aircraft.tail_rotor.radius:14.2f} m')
 		print(f' - Hover power: {(aircraft.hover_power * 1e-3):20.2f} kW')
-		print(f' - MTOW: {aircraft.mtow:27.2f} kg')
-		print('\nIterate second sizing'
-		      + '\n(Refined performance)')
-
-	iterate_second_sizing(aircraft)
-
-	if logs:
-		print(f'\n - Tail rotor radius: {aircraft.tail_rotor.radius:14.2f} m')
 		print(f' - Drag: {aircraft.drag:27.2f} N')
 		print(f' - Thrust: {aircraft.thrust:25.2f} N')
 		print(f' - Angle of attack: {aircraft.alpha * 180 / np.pi:16.2f} deg')
 		print(f' - Advance ratio: {aircraft.advance_ratio:18.2f} -')
 		print(' - Induced velocity: '
 		      + f'{aircraft.main_rotor.induced_velocity:15.2f} m/s')
+		print(f' - Total power: {(aircraft.total_power * 1e-3):20.2f} kW')
 		print(f' - MTOW: {aircraft.mtow:27.2f} kg')
 		print('')
+
+		plot_mtow_convergence(mtow_list)
 
 
 def get_initial_mtow(aircraft: object):
 	""" Estimate the initial maximum take-off weight based on the mission 
-	profile; (SFC and empty weight ratio are constant). [p.90-91]
+	profile; (SFC and empty weight ratio are constant). [pp.90-91]
 	"""
 	fuel_mass = (aircraft.sfc * aircraft.power_available 
 	             * aircraft.mission.duration)
@@ -74,13 +70,69 @@ def get_initial_mtow(aircraft: object):
 	return useful_load / (1 - aircraft.empty_weight_ratio)
 
 
+def design_loop(aircraft: object):
+	""" Combine first sizing as an inner loop with the second sizing in the 
+	outer loop in order to determine the maximum take-off weight. [p.86]
+	"""
+	mtow_list = [aircraft.mtow]
+	counter = 0
+	error = 1
+
+	while error > 1e-4:
+
+		while error > 0.1:
+			iterate_first_sizing(aircraft)
+			mtow_list.append(aircraft.mtow)
+			error = abs((mtow_list[-1] - mtow_list[-2]) / mtow_list[-1])
+			counter += 1
+			if counter > 1e3: break
+
+		iterate_second_sizing(aircraft)
+		mtow_list.append(aircraft.mtow)
+		error = abs((mtow_list[-1] - mtow_list[-2]) / mtow_list[-1])
+		counter += 1
+		if counter > 1e3: break
+
+	# List of MTOW values [kg]
+	return mtow_list
+
+
+def separate_loops(aircraft: object):
+	""" Combine first sizing and second sizing as separate loops in order to 
+	determine the maximum take-off weight.
+	"""
+	mtow_list = [aircraft.mtow]
+	counter = 0
+	error = 1
+
+	while error > 0.1:
+		iterate_first_sizing(aircraft)
+		mtow_list.append(aircraft.mtow)
+		error = abs((mtow_list[-1] - mtow_list[-2]) / mtow_list[-1])
+		counter += 1
+		if counter > 1e3: break
+
+	counter = 0
+	error = 1
+
+	while error > 1e-4:
+		iterate_second_sizing(aircraft)
+		mtow_list.append(aircraft.mtow)
+		error = abs((mtow_list[-1] - mtow_list[-2]) / mtow_list[-1])
+		counter += 1
+		if counter > 1e3: break
+
+	# List of MTOW values [kg]
+	return mtow_list
+
+
 def iterate_first_sizing(aircraft: object):
-	""" Perform one step in the first sizing loop [p. 86]
+	""" Perform one step in the first sizing loop [p.86]
 
 	TODO: 
 		Solidity: Blade loading diagram instead of constant chord.
 	"""
-	# ---- Main rotor sizing [p.98-172] ---------------------------------------
+	# ---- Main rotor sizing [pp.98-172] --------------------------------------
 
 	# Rotor radius for min. power in hover (more factors should be considered)
 	aircraft.main_rotor.solidity = aircraft.main_rotor.get_solidity()
@@ -97,7 +149,7 @@ def iterate_first_sizing(aircraft: object):
 		aircraft.mission.density, advance_ratio=0)
 	aircraft.hover_power = induced_power + profile_power
 
-	# ---- Mass estimation incl. fuel [p.177-179] -----------------------------
+	# ---- Mass estimation incl. fuel [pp.177-179] ----------------------------
 
 	# Fuel consumption in hover, empty weight
 	aircraft.fuel_mass = (aircraft.sfc * 1.1 * aircraft.hover_power 
@@ -107,7 +159,7 @@ def iterate_first_sizing(aircraft: object):
 	aircraft.mtow = (aircraft.empty_weight + aircraft.fuel_mass 
 	                 + aircraft.mission.payload + aircraft.mission.crew_mass)
 
-	# Disc loading and FM [p.181-183]
+	# Disc loading and FM [pp.181-183]
 	weight = aircraft.mtow * aircraft.gravity
 	aircraft.main_rotor.disc_loading = aircraft.main_rotor.get_disc_loading(
 		thrust=weight)
@@ -116,23 +168,23 @@ def iterate_first_sizing(aircraft: object):
 
 
 def iterate_second_sizing(aircraft: object):
-	""" Perform one step in the second sizing loop. [p. 86]
+	""" Perform one step in the second sizing loop. [p.86]
 
 	TODO: 
 		Solidity: Empirical reference instead of constant chord.
 		How should the download factor be considered? What counts as slow
 			flight?
-		Engine calc., SFC = f(P) [p. 310]
+		Engine calc., SFC = f(P) [p.310]
 		Conditions at the beginning of each segment assumed. Half altitude for 
 			climb?
 	"""
-	# ---- Tail rotor design [p.204-213] --------------------------------------
+	# ---- Tail rotor design [pp.204-213] -------------------------------------
 
 	# Tail rotor design according to Layton
 	aircraft.tail_rotor.radius = 0.4 * np.sqrt(2.2 * aircraft.mtow * 1e-3)
 	aircraft.tail_rotor.solidity = aircraft.tail_rotor.get_solidity()
 
-	# ---- Refined performance calculation [pp. 251 - 321] --------------------
+	# ---- Refined performance calculation [pp.251-321] -----------------------
 
 	# Flight state
 	aircraft.drag = aircraft.get_fuselage_drag()
@@ -166,7 +218,7 @@ def iterate_second_sizing(aircraft: object):
 	power_msl = (aircraft.total_power * np.sqrt(temperature_ratio) 
 	             / pressure_ratio)
 
-	# ---- Refined mass estimation [p.324-325] --------------------------------
+	# ---- Refined mass estimation [pp.324-325] -------------------------------
 	
 	# Fuel mass, empty weight
 	aircraft.fuel_mass = (aircraft.sfc * 1.1 * aircraft.total_power 
@@ -178,7 +230,7 @@ def iterate_second_sizing(aircraft: object):
 
 
 def mass_estimation(aircraft: object, power):
-	""" Estimate component masses of medium helicopters. [pp. 408-416]
+	""" Estimate component masses of medium helicopters. [pp.408-416]
 
 	Requires:
 		Fuel mass (aircraft.fuel_mass)
@@ -278,3 +330,19 @@ def plot_powers(aircraft: object, max_velocity):
 
 	# Reset mission segment
 	aircraft.mission.set_mission_segment(0)
+
+
+def plot_mtow_convergence(mtow_list):
+	""" Plot MTOW over the iterations within the design loop.
+	"""
+	# Figure, plot
+	fig, ax = plt.subplots(figsize=(8,5))
+	ax.set_title('MTOW convergence', fontweight='bold')
+	ax.plot(range(len(mtow_list)), mtow_list, 'k')
+	ax.set_xlabel('Iterations')
+	ax.set_ylabel('MTOW [kg]')
+	fig.tight_layout()
+	ax.grid()
+	plt.show()
+
+
