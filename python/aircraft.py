@@ -29,8 +29,12 @@ class Aircraft:
 		self.sfc                = data['Engine']['SFC'] / 1000
 		self.download_factor    = data['Fuselage']['Download factor']
 		self.drag_area          = data['Fuselage']['Drag area']
+		self.landing_gear_type  = data['Landing gear']['Type']
+		self.number_of_legs     = data['Landing gear']['Number of legs']
 		self.empty_weight_ratio = data['Misc']['Empty weight ratio']
 		self.eta_transmission   = data['Misc']['Transmission efficiency']
+		self.special_equipment  = data['Misc']['Special equipment']
+		self.number_of_seats    = data['Misc']['Number of seats']
 		self.gravity            = data['Misc']['Gravity']
 		self.mtow               = 0
 		self.alpha              = 0
