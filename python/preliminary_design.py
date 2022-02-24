@@ -57,12 +57,13 @@ def preliminary_design(aircraft: object, mission_segment: int, logs=True):
 		print(f' - Advance ratio: {aircraft.advance_ratio:18.2f} -')
 		print(' - Induced velocity: '
 		      + f'{aircraft.main_rotor.induced_velocity:15.2f} m/s')
+		print(f' - MTOW: {aircraft.mtow:27.2f} kg')
 		print('')
 
 
 def get_initial_mtow(aircraft: object):
 	""" Estimate the initial maximum take-off weight based on the mission 
-	profile. [p.90-91]
+	profile; (SFC and empty weight ratio are constant). [p.90-91]
 	"""
 	fuel_mass = (aircraft.sfc * aircraft.power_available 
 	             * aircraft.mission.duration)
@@ -74,14 +75,12 @@ def get_initial_mtow(aircraft: object):
 
 
 def iterate_first_sizing(aircraft: object):
-	""" Perform one step in the first sizing loop for conventional 
-	helicopter configurations. [p. 86]
+	""" Perform one step in the first sizing loop [p. 86]
 
 	TODO: 
 		Solidity: Blade loading diagram instead of constant chord.
-		EW models [Prouty]
 	"""
-	# ---- Main rotor design [p.98-172] ---------------------------------------
+	# ---- Main rotor sizing [p.98-172] ---------------------------------------
 
 	# Rotor radius for min. power in hover (more factors should be considered)
 	aircraft.main_rotor.solidity = aircraft.main_rotor.get_solidity()
@@ -100,10 +99,11 @@ def iterate_first_sizing(aircraft: object):
 
 	# ---- Mass estimation incl. fuel [p.177-179] -----------------------------
 
-	# Fuel demand in hover, empty weight
+	# Fuel consumption in hover, empty weight
 	aircraft.fuel_mass = (aircraft.sfc * 1.1 * aircraft.hover_power 
 	                      * aircraft.mission.duration)
-	aircraft.empty_weight = sum(mass_estimation(aircraft).values())
+	aircraft.empty_weight = sum(mass_estimation(
+		aircraft, power=aircraft.hover_power).values())
 	aircraft.mtow = (aircraft.empty_weight + aircraft.fuel_mass 
 	                 + aircraft.mission.payload + aircraft.mission.crew_mass)
 
@@ -116,14 +116,15 @@ def iterate_first_sizing(aircraft: object):
 
 
 def iterate_second_sizing(aircraft: object):
-	""" Perform one step in the second sizing loop for conventional 
-	helicopter configurations. [p. 86]
+	""" Perform one step in the second sizing loop. [p. 86]
 
 	TODO: 
 		Solidity: Empirical reference instead of constant chord.
 		How should the download factor be considered? What counts as slow
 			flight?
-		Engine calc., SFC = f(P) [p. 310], mass estimation
+		Engine calc., SFC = f(P) [p. 310]
+		Conditions at the beginning of each segment assumed. Half altitude for 
+			climb?
 	"""
 	# ---- Tail rotor design [p.204-213] --------------------------------------
 
@@ -156,20 +157,30 @@ def iterate_second_sizing(aircraft: object):
 	tail_rotor_power = aircraft.tail_rotor.power_fraction * main_rotor_power
 	transmission_losses = (((1 / aircraft.eta_transmission) - 1) 
 	                       * main_rotor_power)
-	total_power = (main_rotor_power + tail_rotor_power + transmission_losses 
-	               + aircraft.accessory_power)
+	aircraft.total_power = (main_rotor_power + tail_rotor_power 
+	                        + transmission_losses + aircraft.accessory_power)
 
-	# ...
+	# Engine requirement
+	temperature_ratio = aircraft.mission.temperature / 288.15
+	pressure_ratio = aircraft.mission.pressure / 101325
+	power_msl = (aircraft.total_power * np.sqrt(temperature_ratio) 
+	             / pressure_ratio)
+
+	# ---- Refined mass estimation [p.324-325] --------------------------------
 	
-	# Selection of engine and gearbox
-	# Mass estimation incl. fuel
+	# Fuel mass, empty weight
+	aircraft.fuel_mass = (aircraft.sfc * 1.1 * aircraft.total_power 
+	                      * aircraft.mission.duration)
+	aircraft.empty_weight = sum(mass_estimation(
+		aircraft, power=power_msl).values())
+	aircraft.mtow = (aircraft.empty_weight + aircraft.fuel_mass 
+	                 + aircraft.mission.payload + aircraft.mission.crew_mass)
 
 
-def mass_estimation(aircraft: object):
+def mass_estimation(aircraft: object, power):
 	""" Estimate component masses of medium helicopters. [pp. 408-416]
 
 	Requires:
-		Hover power (aircraft.hover_power)
 		Fuel mass (aircraft.fuel_mass)
 	"""
 	# Wetted fuselage surface [m^2]
@@ -180,12 +191,12 @@ def mass_estimation(aircraft: object):
 	        * aircraft.main_rotor.number_of_blades + 16)
 	m_tr = 0.003942 * aircraft.mtow + 5.66
 	m_fus_t = 0.11907 * aircraft.mtow - 66.666
-	m_prop = 1.83 * (133.8 + 0.1156 * aircraft.hover_power * 1e-3)
+	m_prop = 1.83 * (133.8 + 0.1156 * power * 1e-3)
 	m_drive = (0.00000166 * (0.9 * aircraft.mtow) ** 2 
 	           + 0.087780096 * aircraft.mtow - 113.81241656)
 	m_tanks = 164.751 * np.log(aircraft.fuel_mass / 2.948) - 751.33
 	m_fcs = 95.6368 * np.exp(0.000111114 * aircraft.mtow)
-	m_i = 25.444 * np.log(aircraft.hover_power / 0.7457e3) - 141.62
+	m_i = 25.444 * np.log(power / 0.7457e3) - 141.62
 	m_hyd = 0.003258 * aircraft.mtow + 5.24
 	m_el = 218.496 * np.log(wetted_surface / 0.092903) - 1267.49
 	m_av = 113.4 + aircraft.special_equipment
