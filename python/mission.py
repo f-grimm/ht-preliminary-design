@@ -13,24 +13,17 @@ class Mission():
 	"""
 	def __init__(self, mission_data: dict):
 
-		self.name         = mission_data['Name']
-		self.data         = mission_data['Mission']
-		self.duration     = self.data['Duration'][0]
-		self.payload      = self.data['Payload'][0]
-		self.crew_mass    = self.data['Crew mass'][0]
-		self.climb_angle  = self.data['Climb angle'][0] * np.pi / 180
-		self.flight_speed = self.data['Flight speed'][0]
-		self.temp_offset  = self.data['Temperature offset'][0]
-		self.height       = self.data['Height'][0]
-		self.density      = self.get_density()
-		self.segment      = 0
-
+		self.name = mission_data['Name']
+		self.data = mission_data['Mission']
+		self.set_mission_segment(0)
+		
 
 	def set_mission_segment(self, i):
 		""" Select the mission segment from lists defined in the YAML file. 
 		E.g. Payload: [600, 550] # kg
 		       -> i =  0,   1
 		"""
+		self.segment      = i
 		self.duration     = self.data['Duration'][i]
 		self.payload      = self.data['Payload'][i]
 		self.crew_mass    = self.data['Crew mass'][i]
@@ -38,16 +31,16 @@ class Mission():
 		self.flight_speed = self.data['Flight speed'][i]
 		self.temp_offset  = self.data['Temperature offset'][i]
 		self.height       = self.data['Height'][i]
-		self.density      = self.get_density()
-		self.segment      = i
+		(self.density, 
+		self.pressure, 
+		self.temperature) = self.atmosphere()
 
 		
-	def get_density(self):
+	def atmosphere(self):
 		""" Calculate the density at a given height based on the international
 		standard atmosphere (ISA). Deviation from the ISA is considered via a
 		temperature offset. [p. 278]
 		"""
-
 		temperature_msl = 288.15
 		pressure_msl = 101325
 		radius_earth = 6356766
@@ -61,9 +54,10 @@ class Mission():
 		temperature = temperature_isa + self.temp_offset
 		pressure = (pressure_msl * (1 + gamma / temperature_msl * 
 		            geopotential_height) ** (n / (n - 1)))
+		density = pressure / (gas_constant * temperature)
 
-		# Density [kg m^-3]
-		return pressure / (gas_constant * temperature)
+		# Density [kg m^-3], pressure [Pa], temperature [K]
+		return density, pressure, temperature
 
 
 	def plot_mission(self):
