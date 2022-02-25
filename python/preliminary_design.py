@@ -256,7 +256,7 @@ def mass_estimation(aircraft: object, power):
 	m_ac_ai = 55.542 * np.log(10.7369 * wetted_surface) - 331.21
 	m_l_h = 38
 	
-	# Landing gear (default: skids)
+	# Landing gear
 	if aircraft.landing_gear_type == 'Skids':
 		m_lg = (0.011113004 * (0.9 * aircraft.mtow / 0.453592) ** 0.8606 
 		        * aircraft.main_rotor.number_of_blades ** 0.8046)
