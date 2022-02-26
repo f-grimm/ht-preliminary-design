@@ -13,9 +13,6 @@ import matplotlib.pyplot as plt
 
 def preliminary_design(aircraft: object, mission_segment: int, logs=True):
 	""" Preliminary design of conventional helicopter configurations.
-
-	TODO:
-		Design loop
 	"""
 	aircraft.mission.set_mission_segment(mission_segment)
 
@@ -265,7 +262,7 @@ def mass_estimation(aircraft: object, power):
 		        * aircraft.number_of_legs ** 0.536)
 	elif aircraft.landing_gear_type == 'Retractable wheels':
 		m_lg = (0.187333496 * (0.9 * aircraft.mtow / 0.453592) ** 0.6662 
-		        * 2 ** 0.1198 * n_legs ** 0.536)
+		        * 2 ** 0.1198 * aircraft.number_of_legs ** 0.536)
 	else: raise ValueError('Invalid landing gear type.')
 
 	# Empty weight components [kg]
