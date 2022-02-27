@@ -15,7 +15,7 @@ class Aircraft:
 	"""
 	def __init__(self, filename: str, mission: str):
 		# Load aircraft data from YAML file
-		with open('configurations/' + filename + '.yaml') as file:
+		with open('data/configurations/' + filename + '.yaml') as file:
 			data = yaml.safe_load(file)
 
 		if 'Main rotor' in data:
@@ -41,7 +41,7 @@ class Aircraft:
 		self.drag               = 0
 
 		# Load mission data from YAML file
-		with open('configurations/missions/' + mission + '.yaml') as file:
+		with open('data/missions/' + mission + '.yaml') as file:
 			mission_data = yaml.safe_load(file)
 
 		self.mission = mission_module.Mission(mission_data)

@@ -6,7 +6,7 @@ Created on 2022-02-08
 """
 
 from aircraft import Aircraft
-from preliminary_design import preliminary_design, plot_powers
+import sizing
 
 """
 """
@@ -15,10 +15,10 @@ from preliminary_design import preliminary_design, plot_powers
 aircraft = Aircraft('concept_01', mission='hover_cruise')
 
 # Start premilinary design
-preliminary_design(aircraft, mission_segment=1, logs=True)
+sizing.preliminary_design(aircraft, mission_segment=1, logs=True)
 
 # Plot mission profile
 # aircraft.mission.plot_mission()
 
 # Plot power over flight speed
-# plot_powers(aircraft, max_velocity=80)
+# sizing.plot_powers(aircraft, max_velocity=80)
