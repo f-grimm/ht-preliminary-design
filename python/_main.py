@@ -6,16 +6,16 @@ Created on 2022-02-08
 """
 
 from aircraft import Aircraft
-import sizing
+from helicopter import Helicopter
 
 """
 """
 
 # Create aircraft with initial values from YAML file
-aircraft = Aircraft('concept_01', mission='hover_cruise')
+aircraft = Helicopter('concept_01', mission='hover_cruise')
 
 # Start premilinary design
-sizing.preliminary_design(aircraft, mission_segment=1, logs=True)
+aircraft.preliminary_design(mission_segment=1, logs=True)
 
 # Plot mission profile
 # aircraft.mission.plot_mission()
