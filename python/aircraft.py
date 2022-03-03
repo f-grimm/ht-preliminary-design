@@ -8,25 +8,19 @@ Created on 2022-01-30
 import numpy as np
 import yaml
 import rotor
-import mission as mission_module
 
 class Aircraft:
 	"""
 	"""
-	def __init__(self, filename: str, mission: str):
-		# Load aircraft data from YAML file
+	def __init__(self, filename: str):
+		# Load data from YAML file
 		with open('data/configurations/' + filename + '.yaml') as file:
 			data = yaml.safe_load(file)
-
-		if 'Main rotor' in data:
-			self.main_rotor = rotor.Rotor(data['Main rotor'])
-		if 'Tail rotor' in data:
-			self.tail_rotor = rotor.Rotor(data['Tail rotor'])
 
 		self.name               = data['Name']
 		self.power_available    = data['Engine']['Power available']
 		self.accessory_power    = data['Engine']['Accessory power']
-		self.sfc                = data['Engine']['SFC'] / 1000
+		self.sfc                = data['Engine']['SFC'] * 1e-3
 		self.download_factor    = data['Fuselage']['Download factor']
 		self.drag_area          = data['Fuselage']['Drag area']
 		self.landing_gear_type  = data['Landing gear']['Type']
@@ -40,41 +34,32 @@ class Aircraft:
 		self.alpha              = 0
 		self.drag               = 0
 
-		# Load mission data from YAML file
-		with open('data/missions/' + mission + '.yaml') as file:
-			mission_data = yaml.safe_load(file)
 
-		self.mission = mission_module.Mission(mission_data)
-
-
-	def get_parasite_power(self):
+	def get_parasite_power(self, density, flight_speed):
 		""" Calculate the parasite power created by the fuselage drag in 
 		forward flight.
 		"""
 		# Parasite power [W]
-		return (0.5 * self.mission.density * self.mission.flight_speed ** 3 
-		        * self.drag_area)
+		return (0.5 * density * flight_speed ** 3 * self.drag_area)
 
 
-	def get_climb_power(self):
+	def get_climb_power(self, flight_speed, climb_angle):
 		""" Claculate the climb power due to change in potential energy.
 		"""
 		weight = self.mtow * self.gravity
 
 		# Climb power [W]
-		return (weight * self.mission.flight_speed 
-		        * np.sin(self.mission.climb_angle))
+		return (weight * flight_speed * np.sin(climb_angle))
 
 
-	def get_fuselage_drag(self):
+	def get_fuselage_drag(self, density, flight_speed):
 		""" Calculate the fuselage drag.
 		"""
 		# Fuselage drag [N]
-		return (0.5 * self.mission.density * self.mission.flight_speed ** 2 
-		        * self.drag_area)
+		return (0.5 * density * flight_speed ** 2 * self.drag_area)
 
 
-	def get_thrust(self):
+	def get_thrust(self, climb_angle):
 		""" Calculate the required thrust in translatory motion.
 		Eq.:
 			T sin(-alpha) = D + W sin(gamma)   (1) +
@@ -83,12 +68,12 @@ class Aircraft:
 		weight = self.mtow * self.gravity
 
 		# Thrust [N]
-		return ((self.drag + weight * (np.sin(self.mission.climb_angle) 
-		         + np.cos(self.mission.climb_angle))) 
+		return ((self.drag + weight * (np.sin(climb_angle) 
+		        + np.cos(climb_angle))) 
 		        / (np.cos(self.alpha) - np.sin(self.alpha)))
 
 
-	def get_angle_of_attack(self):
+	def get_angle_of_attack(self, climb_angle):
 		""" Calculate the angle of attack based on a force balance with thrust,
 		weight, and fuselage drag.
 		"""
@@ -96,5 +81,7 @@ class Aircraft:
 
 		# Angle of attack [rad]
 		return - np.arctan(
-			(self.drag + weight * np.sin(self.mission.climb_angle)) 
-			/ (weight * np.cos(self.mission.climb_angle)))
+			(self.drag + weight * np.sin(climb_angle)) 
+			/ (weight * np.cos(climb_angle)))
+
+

@@ -6,40 +6,54 @@ Created on 2022-02-12
 """
 
 from aircraft import Aircraft
+from mission import Mission
+from rotor import Rotor
+import yaml
 import numpy as np
 import matplotlib.pyplot as plt
 
-"""
-"""
-
 class Helicopter(Aircraft):
-	"""
-	"""
+	""" Aircraft sub-class for conventional helicopter configurations.
 
-	def preliminary_design(self, mission_segment: int, logs=True):
-		""" Preliminary design of conventional helicopter configurations.
+	Requires:
+		Main rotor
+		Tail rotor
+	"""
+	def __init__(self, filename: str):		
+		Aircraft.__init__(self, filename)
+
+		# Load data from YAML file
+		with open('data/configurations/' + filename + '.yaml') as file:
+			data = yaml.safe_load(file)
+
+		self.main_rotor = Rotor(data['Main rotor'])
+		self.tail_rotor = Rotor(data['Tail rotor'])
+
+
+	def preliminary_design(self, mission: Mission, segment: int, logs=True):
 		"""
-		self.mission.set_mission_segment(mission_segment)
+		"""
+		mission.set_mission_segment(segment)
 
 		if logs:
 			print('\nPreliminary Design\n' + '-' * 18)
 			print(f'\nAicraft: {self.name}')
-			print(f'Mission: {self.mission.name}')
-			print(f'Segment: {self.mission.segment} '
-			      + f'({self.mission.height:.0f}m, '
-			      + f'{self.mission.duration:.2f}h, '
-			      + f'{self.mission.flight_speed:.0f}m/s)')
+			print(f'Mission: {mission.name}')
+			print(f'Segment: {mission.segment} '
+			      + f'({mission.height:.0f}m, '
+			      + f'{mission.duration:.2f}h, '
+			      + f'{mission.flight_speed:.0f}m/s)')
 			print(f'\nEstimate initial MTOW'
 			      + f'\n(SFC {self.sfc * 1e3:.2f}, '
 			      + f'EWR {self.empty_weight_ratio:.2f})')
 
-		self.mtow = self.get_initial_mtow()
+		self.mtow = self.get_initial_mtow(mission)
 			
 		if logs:
 			print(f'\n - MTOW: {self.mtow:27.2f} kg')
 			print('\nEnter design loop')
 
-		mtow_list = self.separate_loops()
+		mtow_list = self.separate_loops(mission)
 
 		if logs:
 			print(f'Iterations: {len(mtow_list) - 1}')
@@ -59,20 +73,18 @@ class Helicopter(Aircraft):
 			self.plot_mtow_convergence(mtow_list)
 
 
-	def get_initial_mtow(self):
+	def get_initial_mtow(self, mission: Mission):
 		""" Estimate the initial maximum take-off weight based on the mission 
 		profile; (SFC and empty weight ratio are constant). [pp.90-91]
 		"""
-		fuel_mass = (self.sfc * self.power_available 
-		             * self.mission.duration)
-		useful_load = (fuel_mass + self.mission.payload 
-		               + self.mission.crew_mass)
+		fuel_mass = (self.sfc * self.power_available * mission.duration)
+		useful_load = (fuel_mass + mission.payload + mission.crew_mass)
 
 		# MTOW [kg]
 		return useful_load / (1 - self.empty_weight_ratio)
 
 
-	def design_loop(self):
+	def design_loop(self, mission: Mission):
 		""" Combine first sizing as an inner loop with the second sizing in the 
 		outer loop in order to determine the maximum take-off weight. [p.86]
 		"""
@@ -83,13 +95,13 @@ class Helicopter(Aircraft):
 		while error > 1e-4:
 
 			while error > 0.1:
-				self.iterate_first_sizing()
+				self.iterate_first_sizing(mission)
 				mtow_list.append(self.mtow)
 				error = abs((mtow_list[-1] - mtow_list[-2]) / mtow_list[-1])
 				counter += 1
 				if counter > 1e3: break
 
-			self.iterate_second_sizing()
+			self.iterate_second_sizing(mission)
 			mtow_list.append(self.mtow)
 			error = abs((mtow_list[-1] - mtow_list[-2]) / mtow_list[-1])
 			counter += 1
@@ -99,7 +111,7 @@ class Helicopter(Aircraft):
 		return mtow_list
 
 
-	def separate_loops(self):
+	def separate_loops(self, mission: Mission):
 		""" Combine first sizing and second sizing as separate loops in order to 
 		determine the maximum take-off weight.
 		"""
@@ -108,7 +120,7 @@ class Helicopter(Aircraft):
 		error = 1
 
 		while error > 0.1:
-			self.iterate_first_sizing()
+			self.iterate_first_sizing(mission)
 			mtow_list.append(self.mtow)
 			error = abs((mtow_list[-1] - mtow_list[-2]) / mtow_list[-1])
 			counter += 1
@@ -118,7 +130,7 @@ class Helicopter(Aircraft):
 		error = 1
 
 		while error > 1e-4:
-			self.iterate_second_sizing()
+			self.iterate_second_sizing(mission)
 			mtow_list.append(self.mtow)
 			error = abs((mtow_list[-1] - mtow_list[-2]) / mtow_list[-1])
 			counter += 1
@@ -128,7 +140,7 @@ class Helicopter(Aircraft):
 		return mtow_list
 
 
-	def iterate_first_sizing(self):
+	def iterate_first_sizing(self, mission):
 		""" Perform one step in the first sizing loop [p.86]
 
 		TODO: 
@@ -140,26 +152,26 @@ class Helicopter(Aircraft):
 		self.main_rotor.solidity = self.main_rotor.get_solidity()
 		weight = self.mtow * self.gravity
 		self.main_rotor.radius = self.main_rotor.get_min_power_radius(
-			self.mission.density, thrust=weight)
+			mission.density, thrust=weight)
 
 		# ---- Preliminary performance estimation [p.175] -------------------------
 
 		# Hover power
 		induced_power = self.main_rotor.get_induced_power_hover(
-			self.mission.density, thrust=weight)
+			mission.density, thrust=weight)
 		profile_power = self.main_rotor.get_profile_power(
-			self.mission.density, advance_ratio=0)
+			mission.density, advance_ratio=0)
 		self.hover_power = induced_power + profile_power
 
 		# ---- Mass estimation incl. fuel [pp.177-179] ----------------------------
 
 		# Fuel consumption in hover, empty weight
 		self.fuel_mass = (self.sfc * 1.1 * self.hover_power 
-		                      * self.mission.duration)
+		                      * mission.duration)
 		self.empty_weight = sum(self.mass_estimation(
 			power=self.hover_power).values())
 		self.mtow = (self.empty_weight + self.fuel_mass 
-		                 + self.mission.payload + self.mission.crew_mass)
+		                 + mission.payload + mission.crew_mass)
 
 		# Disc loading and FM [pp.181-183]
 		weight = self.mtow * self.gravity
@@ -169,7 +181,7 @@ class Helicopter(Aircraft):
 			(induced_power / self.main_rotor.kappa) / self.hover_power)
 
 
-	def iterate_second_sizing(self):
+	def iterate_second_sizing(self, mission):
 		""" Perform one step in the second sizing loop. [p.86]
 
 		TODO: 
@@ -189,23 +201,23 @@ class Helicopter(Aircraft):
 		# ---- Refined performance calculation [pp.251-321] -----------------------
 
 		# Flight state
-		self.drag = self.get_fuselage_drag()
-		self.alpha = self.get_angle_of_attack()
-		self.thrust = self.get_thrust()
-		self.advance_ratio = (self.mission.flight_speed 
+		self.drag = self.get_fuselage_drag(mission.density, mission.flight_speed)
+		self.alpha = self.get_angle_of_attack(mission.climb_angle)
+		self.thrust = self.get_thrust(mission.climb_angle)
+		self.advance_ratio = (mission.flight_speed 
 		                          / self.main_rotor.tip_velocity)
 		self.main_rotor.induced_velocity = (
 			self.main_rotor.get_induced_velocity(
-				self.mission.density, self.mission.flight_speed, 
+				mission.density, mission.flight_speed, 
 				self.alpha, self.thrust))
 
 		# Power calculation
 		induced_power = (self.main_rotor.kappa * self.thrust 
 		                 * self.main_rotor.induced_velocity)
 		profile_power = self.main_rotor.get_profile_power(
-			self.mission.density, self.advance_ratio)
-		parasite_power = self.get_parasite_power()
-		climb_power = self.get_climb_power()
+			mission.density, self.advance_ratio)
+		parasite_power = self.get_parasite_power(mission.density, mission.flight_speed)
+		climb_power = self.get_climb_power(mission.flight_speed, mission.climb_angle)
 		main_rotor_power = (induced_power + profile_power + parasite_power 
 		                    + climb_power)
 		tail_rotor_power = self.tail_rotor.power_fraction * main_rotor_power
@@ -215,8 +227,8 @@ class Helicopter(Aircraft):
 		                        + transmission_losses + self.accessory_power)
 
 		# Engine requirement
-		temperature_ratio = self.mission.temperature / 288.15
-		pressure_ratio = self.mission.pressure / 101325
+		temperature_ratio = mission.temperature / 288.15
+		pressure_ratio = mission.pressure / 101325
 		power_msl = (self.total_power * np.sqrt(temperature_ratio) 
 		             / pressure_ratio)
 
@@ -224,11 +236,11 @@ class Helicopter(Aircraft):
 		
 		# Fuel mass, empty weight
 		self.fuel_mass = (self.sfc * 1.1 * self.total_power 
-		                      * self.mission.duration)
+		                      * mission.duration)
 		self.empty_weight = sum(self.mass_estimation(
 			power=power_msl).values())
 		self.mtow = (self.empty_weight + self.fuel_mass 
-		                 + self.mission.payload + self.mission.crew_mass)
+		                 + mission.payload + mission.crew_mass)
 
 
 	def mass_estimation(self, power):
@@ -280,7 +292,7 @@ class Helicopter(Aircraft):
 			'air conditioning/anti-ice': m_ac_ai, 'loading and handling': m_l_h}
 
 
-	def plot_powers(self, max_velocity):
+	def plot_powers(self, mission: Mission, max_velocity: float):
 		""" Plot powers over a range of horizontal flight speeds for the current 
 		MTOW. Level flight approximation is applied.
 		"""
@@ -290,22 +302,22 @@ class Helicopter(Aircraft):
 		# Initialize parameters
 		P_i, P_0, P_p, P_tr, P_tl, P_a, P = [], [], [], [], [], [], []
 		weight = self.mtow * self.gravity
-		self.mission.climb_angle = 0
+		mission.climb_angle = 0
 		self.alpha = 0
 
 		for V in speeds:
 
 			# Flight state
-			self.mission.flight_speed = V
+			mission.flight_speed = V
 			advance_ratio = V / self.main_rotor.tip_velocity
 			induced_velocity = self.main_rotor.get_induced_velocity_level(
-				self.mission.density, V, thrust=weight)
+				mission.density, V, thrust=weight)
 
 			# Power calculation [kW]
 			P_i.append(self.main_rotor.kappa * weight * induced_velocity 
 			           * 1e-3)
 			P_0.append(self.main_rotor.get_profile_power(
-				self.mission.density, advance_ratio) * 1e-3)
+				mission.density, advance_ratio) * 1e-3)
 			P_p.append(self.get_parasite_power() * 1e-3)
 			main_rotor_power = P_i[-1] + P_0[-1] + P_p[-1]
 			P_tr.append(self.tail_rotor.power_fraction * main_rotor_power)
@@ -331,7 +343,7 @@ class Helicopter(Aircraft):
 		plt.show()
 
 		# Reset mission segment
-		self.mission.set_mission_segment(0)
+		mission.set_mission_segment(0)
 
 
 	def plot_mtow_convergence(self, mtow_list):

@@ -11,7 +11,6 @@ class Rotor:
 	"""
 	"""
 	def __init__(self, rotor_data: dict):
-		
 		self.radius               = rotor_data['Radius']
 		self.number_of_blades     = rotor_data['Number of blades']
 		self.chord                = rotor_data['Chord']

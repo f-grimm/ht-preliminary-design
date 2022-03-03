@@ -5,16 +5,20 @@ Created on 2022-02-08
 @author: Fabian Grimm (f.grimm@tum.de)
 """
 
+import yaml
 import numpy as np
 import matplotlib.pyplot as plt
 
 class Mission():
 	"""
 	"""
-	def __init__(self, mission_data: dict):
+	def __init__(self, filename):
+		# Load mission data from YAML file
+		with open('data/missions/' + filename + '.yaml') as file:
+			data = yaml.safe_load(file)
 
-		self.name = mission_data['Name']
-		self.data = mission_data['Mission']
+		self.name = data['Name']
+		self.data = data['Mission']
 		self.set_mission_segment(0)
 		
 
