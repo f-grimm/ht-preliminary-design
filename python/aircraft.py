@@ -69,7 +69,7 @@ class Aircraft:
 
 		# Thrust [N]
 		return ((self.drag + weight * (np.sin(climb_angle) 
-		        + np.cos(climb_angle))) 
+		         + np.cos(climb_angle))) 
 		        / (np.cos(self.alpha) - np.sin(self.alpha)))
 
 

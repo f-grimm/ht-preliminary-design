@@ -33,7 +33,7 @@ class Rotor:
 	def get_disc_loading(self, thrust):
 		""" Calculate the disc loading.
 		"""
-		# Disc loading [N m^-2]
+		# Disc loading [N/m^2]
 		return thrust / (np.pi * self.radius ** 2)
 
 
@@ -65,7 +65,7 @@ class Rotor:
 			counter += 1
 			if counter > 1e6: raise ValueError('No convergence.')
 
-		# Induced velocity [m s^-1]
+		# Induced velocity [m/s]
 		return v_i
 
 
@@ -75,7 +75,7 @@ class Rotor:
 		"""
 		v_h = np.sqrt(thrust / (2 * density * np.pi * self.radius ** 2))
 
-		# Induced velocity [m s^-1]
+		# Induced velocity [m/s]
 		return np.sqrt(-0.5 * v_inf ** 2 
 		               + np.sqrt(v_h ** 4 + 0.25 * v_inf ** 4))
 

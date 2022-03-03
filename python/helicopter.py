@@ -71,6 +71,7 @@ class Helicopter(Aircraft):
 			print('')
 
 			self.plot_mtow_convergence(mtow_list)
+			self.plot_powers(mission.density, 80)
 
 
 	def get_initial_mtow(self, mission: Mission):
@@ -112,8 +113,8 @@ class Helicopter(Aircraft):
 
 
 	def separate_loops(self, mission: Mission):
-		""" Combine first sizing and second sizing as separate loops in order to 
-		determine the maximum take-off weight.
+		""" Combine first sizing and second sizing as separate loops in order 
+		to determine the maximum take-off weight.
 		"""
 		mtow_list = [self.mtow]
 		counter = 0
@@ -145,16 +146,17 @@ class Helicopter(Aircraft):
 
 		TODO: 
 			Solidity: Blade loading diagram instead of constant chord.
+			Opt. radius: Consider more factors?
 		"""
-		# ---- Main rotor sizing [pp.98-172] --------------------------------------
+		# ---- Main rotor sizing [pp.98-172] ----------------------------------
 
-		# Rotor radius for min. power in hover (more factors should be considered)
+		# Rotor radius for min. power in hover
 		self.main_rotor.solidity = self.main_rotor.get_solidity()
 		weight = self.mtow * self.gravity
 		self.main_rotor.radius = self.main_rotor.get_min_power_radius(
 			mission.density, thrust=weight)
 
-		# ---- Preliminary performance estimation [p.175] -------------------------
+		# ---- Preliminary performance estimation [p.175] ---------------------
 
 		# Hover power
 		induced_power = self.main_rotor.get_induced_power_hover(
@@ -163,15 +165,14 @@ class Helicopter(Aircraft):
 			mission.density, advance_ratio=0)
 		self.hover_power = induced_power + profile_power
 
-		# ---- Mass estimation incl. fuel [pp.177-179] ----------------------------
+		# ---- Mass estimation incl. fuel [pp.177-179] ------------------------
 
 		# Fuel consumption in hover, empty weight
-		self.fuel_mass = (self.sfc * 1.1 * self.hover_power 
-		                      * mission.duration)
+		self.fuel_mass = self.sfc * 1.1 * self.hover_power * mission.duration
 		self.empty_weight = sum(self.mass_estimation(
 			power=self.hover_power).values())
-		self.mtow = (self.empty_weight + self.fuel_mass 
-		                 + mission.payload + mission.crew_mass)
+		self.mtow = (self.empty_weight + self.fuel_mass + mission.payload 
+		             + mission.crew_mass)
 
 		# Disc loading and FM [pp.181-183]
 		weight = self.mtow * self.gravity
@@ -189,42 +190,45 @@ class Helicopter(Aircraft):
 			How should the download factor be considered? What counts as slow
 				flight?
 			Engine calc., SFC = f(P) [p.310]
-			Conditions at the beginning of each segment assumed. Half altitude for 
-				climb?
+			Conditions at the beginning of each segment assumed. Half altitude 
+				for climb?
 		"""
-		# ---- Tail rotor design [pp.204-213] -------------------------------------
+		# ---- Tail rotor design [pp.204-213] ---------------------------------
 
 		# Tail rotor design according to Layton
 		self.tail_rotor.radius = 0.4 * np.sqrt(2.2 * self.mtow * 1e-3)
 		self.tail_rotor.solidity = self.tail_rotor.get_solidity()
 
-		# ---- Refined performance calculation [pp.251-321] -----------------------
+		# ---- Refined performance calculation [pp.251-321] -------------------
 
 		# Flight state
-		self.drag = self.get_fuselage_drag(mission.density, mission.flight_speed)
+		self.drag = self.get_fuselage_drag(
+			mission.density, mission.flight_speed)
 		self.alpha = self.get_angle_of_attack(mission.climb_angle)
 		self.thrust = self.get_thrust(mission.climb_angle)
 		self.advance_ratio = (mission.flight_speed 
-		                          / self.main_rotor.tip_velocity)
+		                      / self.main_rotor.tip_velocity)
 		self.main_rotor.induced_velocity = (
 			self.main_rotor.get_induced_velocity(
-				mission.density, mission.flight_speed, 
-				self.alpha, self.thrust))
+				mission.density, mission.flight_speed, self.alpha, 
+				self.thrust))
 
 		# Power calculation
 		induced_power = (self.main_rotor.kappa * self.thrust 
 		                 * self.main_rotor.induced_velocity)
 		profile_power = self.main_rotor.get_profile_power(
 			mission.density, self.advance_ratio)
-		parasite_power = self.get_parasite_power(mission.density, mission.flight_speed)
-		climb_power = self.get_climb_power(mission.flight_speed, mission.climb_angle)
+		parasite_power = self.get_parasite_power(
+			mission.density, mission.flight_speed)
+		climb_power = self.get_climb_power(
+			mission.flight_speed, mission.climb_angle)
 		main_rotor_power = (induced_power + profile_power + parasite_power 
 		                    + climb_power)
 		tail_rotor_power = self.tail_rotor.power_fraction * main_rotor_power
 		transmission_losses = (((1 / self.eta_transmission) - 1) 
 		                       * main_rotor_power)
 		self.total_power = (main_rotor_power + tail_rotor_power 
-		                        + transmission_losses + self.accessory_power)
+		                    + transmission_losses + self.accessory_power)
 
 		# Engine requirement
 		temperature_ratio = mission.temperature / 288.15
@@ -232,15 +236,13 @@ class Helicopter(Aircraft):
 		power_msl = (self.total_power * np.sqrt(temperature_ratio) 
 		             / pressure_ratio)
 
-		# ---- Refined mass estimation [pp.324-325] -------------------------------
+		# ---- Refined mass estimation [pp.324-325] ---------------------------
 		
 		# Fuel mass, empty weight
-		self.fuel_mass = (self.sfc * 1.1 * self.total_power 
-		                      * mission.duration)
-		self.empty_weight = sum(self.mass_estimation(
-			power=power_msl).values())
-		self.mtow = (self.empty_weight + self.fuel_mass 
-		                 + mission.payload + mission.crew_mass)
+		self.fuel_mass = (self.sfc * 1.1 * self.total_power * mission.duration)
+		self.empty_weight = sum(self.mass_estimation(power=power_msl).values())
+		self.mtow = (self.empty_weight + self.fuel_mass + mission.payload 
+		             + mission.crew_mass)
 
 
 	def mass_estimation(self, power):
@@ -284,17 +286,17 @@ class Helicopter(Aircraft):
 
 		# Empty weight components [kg]
 		return {
-			'main rotor': m_mr, 'tail rotor': m_tr, 'fuselage and tail': m_fus_t, 
+			'main rotor': m_mr, 'tail rotor': m_tr, 'fuselage, tail': m_fus_t, 
 			'landing gear': m_lg, 'engines': m_prop, 'transmission': m_drive, 
 			'fuel tanks': m_tanks, 'flight control systems': m_fcs, 
 			'instruments': m_i, 'hydraulic systems': m_hyd, 
-			'electrical systems': m_el, 'avionics': m_av, 'furnishing': m_furn,
-			'air conditioning/anti-ice': m_ac_ai, 'loading and handling': m_l_h}
+			'electrical systems': m_el, 'avionics': m_av, 'furnishing': m_furn, 
+			'air conditioning, anti-ice': m_ac_ai, 'loading, handling': m_l_h}
 
 
-	def plot_powers(self, mission: Mission, max_velocity: float):
-		""" Plot powers over a range of horizontal flight speeds for the current 
-		MTOW. Level flight approximation is applied.
+	def plot_powers(self, density, max_velocity: float):
+		""" Plot powers over a range of horizontal flight speeds for the 
+		current MTOW. Level flight approximation is applied.
 		"""
 		# List of speeds (x-axis)
 		speeds = np.linspace(0, max_velocity, 100)
@@ -302,23 +304,21 @@ class Helicopter(Aircraft):
 		# Initialize parameters
 		P_i, P_0, P_p, P_tr, P_tl, P_a, P = [], [], [], [], [], [], []
 		weight = self.mtow * self.gravity
-		mission.climb_angle = 0
 		self.alpha = 0
 
 		for V in speeds:
 
 			# Flight state
-			mission.flight_speed = V
 			advance_ratio = V / self.main_rotor.tip_velocity
 			induced_velocity = self.main_rotor.get_induced_velocity_level(
-				mission.density, V, thrust=weight)
+				density, V, thrust=weight)
 
 			# Power calculation [kW]
 			P_i.append(self.main_rotor.kappa * weight * induced_velocity 
 			           * 1e-3)
 			P_0.append(self.main_rotor.get_profile_power(
-				mission.density, advance_ratio) * 1e-3)
-			P_p.append(self.get_parasite_power() * 1e-3)
+				density, advance_ratio) * 1e-3)
+			P_p.append(self.get_parasite_power(density, V) * 1e-3)
 			main_rotor_power = P_i[-1] + P_0[-1] + P_p[-1]
 			P_tr.append(self.tail_rotor.power_fraction * main_rotor_power)
 			P_tl.append(((1 / self.eta_transmission) - 1) * main_rotor_power)
@@ -341,9 +341,6 @@ class Helicopter(Aircraft):
 		ax.legend()
 		ax.grid()
 		plt.show()
-
-		# Reset mission segment
-		mission.set_mission_segment(0)
 
 
 	def plot_mtow_convergence(self, mtow_list):
