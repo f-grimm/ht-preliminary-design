@@ -141,7 +141,7 @@ class Helicopter(Aircraft):
 		return mtow_list
 
 
-	def iterate_first_sizing(self, mission):
+	def iterate_first_sizing(self, mission: Mission):
 		""" Perform one step in the first sizing loop [p.86]
 
 		TODO: 
@@ -182,7 +182,7 @@ class Helicopter(Aircraft):
 			(induced_power / self.main_rotor.kappa) / self.hover_power)
 
 
-	def iterate_second_sizing(self, mission):
+	def iterate_second_sizing(self, mission: Mission):
 		""" Perform one step in the second sizing loop. [p.86]
 
 		TODO: 
@@ -294,7 +294,7 @@ class Helicopter(Aircraft):
 			'air conditioning, anti-ice': m_ac_ai, 'loading, handling': m_l_h}
 
 
-	def plot_powers(self, density, max_velocity: float):
+	def plot_powers(self, density, max_velocity):
 		""" Plot powers over a range of horizontal flight speeds for the 
 		current MTOW. Level flight approximation is applied.
 		"""
@@ -343,7 +343,7 @@ class Helicopter(Aircraft):
 		plt.show()
 
 
-	def plot_mtow_convergence(self, mtow_list):
+	def plot_mtow_convergence(self, mtow_list: list):
 		""" Plot MTOW over the iterations within the design loop.
 		"""
 		# Figure, plot
