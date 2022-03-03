@@ -21,4 +21,4 @@ mission = Mission('hover_cruise')
 concept.preliminary_design(mission, segment=1, logs=True)
 
 # Plot mission profile
-# aircraft.mission.plot_mission()
+# mission.plot_mission()
