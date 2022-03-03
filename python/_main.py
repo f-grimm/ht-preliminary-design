@@ -22,6 +22,3 @@ concept.preliminary_design(mission, segment=1, logs=True)
 
 # Plot mission profile
 # aircraft.mission.plot_mission()
-
-# Plot power over flight speed
-# sizing.plot_powers(aircraft, max_velocity=80)
