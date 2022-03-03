@@ -60,7 +60,7 @@ class Mission():
 		            geopotential_height) ** (n / (n - 1)))
 		density = pressure / (gas_constant * temperature)
 
-		# Density [kg m^-3], pressure [Pa], temperature [K]
+		# Density [kg/m^3], pressure [Pa], temperature [K]
 		return density, pressure, temperature
 
 
