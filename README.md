@@ -2,10 +2,6 @@
 
 Helicopter sizing code for the TUM Institute of Helicopter Technology.
 
-## Progress
-
-- [ ] Create code structure
-
 ## Install
 
 YAML:
