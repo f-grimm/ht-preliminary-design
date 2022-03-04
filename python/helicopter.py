@@ -20,12 +20,14 @@ class Helicopter(Aircraft):
 		Tail rotor
 	"""
 	def __init__(self, filename: str):		
+		# Initialize aircraft level attributes
 		Aircraft.__init__(self, filename)
 
 		# Load data from YAML file
 		with open('data/configurations/' + filename + '.yaml') as file:
 			data = yaml.safe_load(file)
 
+		# Add main and tail rotor
 		self.main_rotor = Rotor(data['Main rotor'])
 		self.tail_rotor = Rotor(data['Tail rotor'])
 
@@ -178,8 +180,8 @@ class Helicopter(Aircraft):
 		weight = self.mtow * self.gravity
 		self.main_rotor.disc_loading = self.main_rotor.get_disc_loading(
 			thrust=weight)
-		self.main_rotor.figure_of_merit = (
-			(induced_power / self.main_rotor.kappa) / self.hover_power)
+		self.main_rotor.figure_of_merit = self.main_rotor.get_figure_of_merit(
+			induced_power, profile_power)
 
 
 	def iterate_second_sizing(self, mission: Mission):

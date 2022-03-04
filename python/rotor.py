@@ -37,6 +37,13 @@ class Rotor:
 		return thrust / (np.pi * self.radius ** 2)
 
 
+	def get_figure_of_merit(self, induced_power, profile_power):
+		""" Calculate the figure of merit.
+		"""
+		# Figure of merit [-]
+		return (induced_power / self.kappa) / (induced_power + profile_power)
+
+
 	def get_induced_power_hover(self, density, thrust):
 		""" Calculate the induced power in hover.
 		"""
@@ -108,3 +115,6 @@ class Rotor:
 
 		# Power in ground effect [W]
 		return k_G * induced_power_oge
+
+
+
