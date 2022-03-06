@@ -306,7 +306,6 @@ class Helicopter(Aircraft):
 		# Initialize parameters
 		P_i, P_0, P_p, P_tr, P_tl, P_a, P = [], [], [], [], [], [], []
 		weight = self.mtow * self.gravity
-		self.alpha = 0
 
 		for V in speeds:
 
