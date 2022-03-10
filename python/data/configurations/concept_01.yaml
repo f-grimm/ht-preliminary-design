@@ -2,48 +2,48 @@
 Name: Concept 01
 
 Main rotor:
-   
-   Radius: 6.5 # m
-   Number of blades: 4 # -
-   Chord: 0.27 # m
-   Solidity: 0.07 # -
+    
+    Radius: 6.5 # m
+    Number of blades: 4 # -
+    Chord: 0.27 # m
+    Solidity: 0.07 # -
 
-   Kappa: 1.15 # -
-   Zero-lift drag coeff.: 0.011 # -
-   Tip velocity: 213 # ms^-1
+    Kappa: 1.15 # -
+    Zero-lift drag coeff.: 0.011 # -
+    Tip velocity: 213 # ms^-1
 
 Tail rotor:
-   
-   Radius: 0.8 # m
-   Number of blades: 4 # -
-   Chord: 0.1 # m
-   Solidity: 0.1 # -
+    
+    Radius: 0.8 # m
+    Number of blades: 4 # -
+    Chord: 0.1 # m
+    Solidity: 0.1 # -
 
-   Kappa: 1.15 # -
-   Zero-lift drag coeff.: 0.011 # -
-   Tip velocity: 213 # ms^-1
-   Power fraction: 0.05
+    Kappa: 1.15 # -
+    Zero-lift drag coeff.: 0.011 # -
+    Tip velocity: 213 # ms^-1
+    Power fraction: 0.05
 
 Engine:
 
-   Power available: 500000 # W
-   Accessory power: 48000 # W [p. 271]
-   SFC: 0.35 # 
+    Power available: 500000 # W
+    Accessory power: 48000 # W [p. 271]
+    SFC: 0.35 # 
 
 Fuselage:
 
-   Download factor: 0.05 # -
-   Drag area: 1.5 # m^2
+    Download factor: 0.05 # -
+    Drag area: 1.5 # m^2
 
 Landing gear:
 
-   Type: Rigid wheels
-   Number of legs: 2 # -
+    Type: Rigid wheels
+    Number of legs: 2 # -
 
 Misc:
 
-   Empty weight ratio: 0.5
-   Transmission efficiency: 0.98
-   Special equipment: 0 # kg
-   Number of seats: 3 # -
-   Gravity: 9.81 # ms^-2
+    Empty weight ratio: 0.5
+    Transmission efficiency: 0.98
+    Special equipment: 0 # kg
+    Number of seats: 3 # -
+    Gravity: 9.81 # ms^-2

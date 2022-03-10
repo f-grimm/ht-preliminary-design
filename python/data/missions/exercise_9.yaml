@@ -3,13 +3,13 @@ Name: Exercise 9
 
 Mission:
 
-   # Constant within segment
-   Duration: [0.1, 0.067, 0.5, 0.2, 0.046, 0.77] # h
-   Payload: [0, 0, 0, 170, 170, 0] # kg
-   Crew mass: [230, 230, 230, 230, 230, 230] # kg
-   Climb angle: [0, 5.93, 0, 0, -5.7, 0] # deg
-   Flight speed: [0, 60, 75.1, 0, 60, 54] # ms^-1
-   Temperature offset: [0, 0, 0, 0, 0, 0] # °C
-   
-   # Linear with defined points
-   Height: [0, 0, 1500, 1500, 1500, 500, 500] # m
+    # Constant within segment
+    Duration: [0.1, 0.067, 0.5, 0.2, 0.046, 0.77] # h
+    Payload: [0, 0, 0, 170, 170, 0] # kg
+    Crew mass: [230, 230, 230, 230, 230, 230] # kg
+    Climb angle: [0, 5.93, 0, 0, -5.7, 0] # deg
+    Flight speed: [0, 60, 75.1, 0, 60, 54] # ms^-1
+    Temperature offset: [0, 0, 0, 0, 0, 0] # °C
+    
+    # Linear with defined points
+    Height: [0, 0, 1500, 1500, 1500, 500, 500] # m
