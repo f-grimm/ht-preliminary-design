@@ -14,7 +14,7 @@ from mission import Mission
 # Create aircraft with initial values from YAML file
 concept = Helicopter('concept_01')
 
-# Load mission from YAML file
+# Load mission from YAML file (exercise_9, hover_cruise)
 mission = Mission('hover_cruise') 
 
 # Start premilinary design
