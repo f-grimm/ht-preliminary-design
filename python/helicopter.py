@@ -146,9 +146,8 @@ class Helicopter(Aircraft):
     def iterate_first_sizing(self, mission: Mission):
         """ Perform one step in the first sizing loop [p.86]
 
-        TODO: 
-            Solidity: Blade loading diagram instead of constant chord.
-            Opt. radius: Consider more factors?
+        TODO: Solidity: Blade loading diagram instead of constant chord
+        TODO: Opt. radius: Consider more factors?
         """
         # ---- Main rotor sizing [pp.98-172] ----------------------------------
 
@@ -187,13 +186,12 @@ class Helicopter(Aircraft):
     def iterate_second_sizing(self, mission: Mission):
         """ Perform one step in the second sizing loop. [p.86]
 
-        TODO: 
-            Solidity: Empirical reference instead of constant chord.
-            How should the download factor be considered? What counts as slow
-                flight?
-            Engine calc., SFC = f(P) [p.310]
-            Conditions at the beginning of each segment assumed. Half altitude 
-                for climb?
+        TODO: Solidity: Empirical reference instead of constant chord
+        TODO: How should the download factor be considered? What counts as slow 
+            flight?
+        TODO: Engine calc., SFC = f(P) [p.310]
+        TODO: Conditions at the beginning of each segment assumed. Half 
+            altitude for climb?
         """
         # ---- Tail rotor design [pp.204-213] ---------------------------------
 
@@ -232,7 +230,7 @@ class Helicopter(Aircraft):
         self.total_power = (main_rotor_power + tail_rotor_power 
                             + transmission_losses + self.accessory_power)
 
-        # Engine requirement
+        # Engine requirement [p.298]
         temperature_ratio = mission.temperature / 288.15
         pressure_ratio = mission.pressure / 101325
         power_msl = (self.total_power * np.sqrt(temperature_ratio) 
