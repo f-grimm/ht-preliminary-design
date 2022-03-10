@@ -9,7 +9,7 @@ import yaml
 import numpy as np
 import matplotlib.pyplot as plt
 
-class Mission():
+class Mission:
     """
     """
     def __init__(self, filename):
