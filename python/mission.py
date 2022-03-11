@@ -34,7 +34,8 @@ class Mission:
         self.climb_angle  = self.data['Climb angle'][i] * np.pi / 180
         self.flight_speed = self.data['Flight speed'][i]
         self.temp_offset  = self.data['Temperature offset'][i]
-        self.height       = self.data['Height'][i]
+        self.height       = (self.data['Height'][i] 
+                             + self.data['Height'][i + 1]) / 2
         (self.density, 
         self.pressure, 
         self.temperature) = self.atmosphere()
