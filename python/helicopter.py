@@ -18,6 +18,8 @@ class Helicopter(Aircraft):
     Requires:
         Main rotor
         Tail rotor
+
+    TODO: Engine calc., SFC = f(P) [p.310]
     """
     def __init__(self, filename: str):      
         # Initialize aircraft level attributes
@@ -35,6 +37,7 @@ class Helicopter(Aircraft):
     def preliminary_design(self, mission: Mission, segment: int, logs=True):
         """
         """
+        # Set the mission segment as defined in _main
         mission.set_mission_segment(segment)
 
         if logs:
@@ -45,23 +48,14 @@ class Helicopter(Aircraft):
                   + f'({mission.height:.0f}m, '
                   + f'{mission.duration:.2f}h, '
                   + f'{mission.flight_speed:.0f}m/s)')
-            print(f'\nEstimate initial MTOW'
-                  + f'\n(SFC {self.sfc * 1e3:.2f}, '
-                  + f'EWR {self.empty_weight_ratio:.2f})')
-
-        self.mtow = self.get_initial_mtow(mission)
             
-        if logs:
-            print(f'\n - MTOW: {self.mtow:27.2f} kg')
-            print('\nEnter design loop')
-
-        mtow_list = self.separate_loops(mission)
+        # Sizing calculation
+        mtow_list = self.sizing(mission)
 
         if logs:
-            print(f'Iterations: {len(mtow_list) - 1}')
+            print(f'\nIterations: {len(mtow_list) - 1}')
             print(f'\n - Main rotor radius: {self.main_rotor.radius:14.2f} m')
             print(f' - Tail rotor radius: {self.tail_rotor.radius:14.2f} m')
-            print(f' - Hover power: {(self.hover_power * 1e-3):20.2f} kW')
             print(f' - Drag: {self.drag:27.2f} N')
             print(f' - Thrust: {self.thrust:25.2f} N')
             print(f' - Angle of attack: {self.alpha * 180 / np.pi:16.2f} deg')
@@ -72,6 +66,7 @@ class Helicopter(Aircraft):
             print(f' - MTOW: {self.mtow:27.2f} kg')
             print('')
 
+            # Plots
             self.plot_mtow_convergence(mtow_list)
             self.plot_powers(mission.density, 80)
 
@@ -87,118 +82,59 @@ class Helicopter(Aircraft):
         return useful_load / (1 - self.empty_weight_ratio)
 
 
-    def design_loop(self, mission: Mission):
-        """ Combine first sizing as an inner loop with the second sizing in the 
-        outer loop in order to determine the maximum take-off weight. [p.86]
+    def sizing(self, mission: Mission):
+        """ 
         """
+        # Estimate MTOW
+        self.mtow = self.get_initial_mtow(mission)
+
+        # Initialize design loop
         mtow_list = [self.mtow]
         counter = 0
         error = 1
 
         while error > 1e-4:
 
-            while error > 0.1:
-                self.iterate_first_sizing(mission)
-                mtow_list.append(self.mtow)
-                error = abs((mtow_list[-1] - mtow_list[-2]) / mtow_list[-1])
-                counter += 1
-                if counter > 1e3: break
-
-            self.iterate_second_sizing(mission)
+            # Sizing
+            self.main_rotor_sizing(mission)
+            self.tail_rotor_sizing()
+            self.refined_performance(mission)
+            self.mass_estimation(mission)
+            
+            # Check for convergence
             mtow_list.append(self.mtow)
             error = abs((mtow_list[-1] - mtow_list[-2]) / mtow_list[-1])
             counter += 1
-            if counter > 1e3: break
+            if counter > 1e3: raise ValueError('No convergence.')
 
         # List of MTOW values [kg]
         return mtow_list
 
 
-    def separate_loops(self, mission: Mission):
-        """ Combine first sizing and second sizing as separate loops in order 
-        to determine the maximum take-off weight.
+    def main_rotor_sizing(self, mission: Mission):
+        """ Determine main rotor radius and disc loading; optimized for min. 
+        power in hover [pp.98-172]
         """
-        mtow_list = [self.mtow]
-        counter = 0
-        error = 1
-
-        while error > 0.1:
-            self.iterate_first_sizing(mission)
-            mtow_list.append(self.mtow)
-            error = abs((mtow_list[-1] - mtow_list[-2]) / mtow_list[-1])
-            counter += 1
-            if counter > 1e3: break
-
-        counter = 0
-        error = 1
-
-        while error > 1e-4:
-            self.iterate_second_sizing(mission)
-            mtow_list.append(self.mtow)
-            error = abs((mtow_list[-1] - mtow_list[-2]) / mtow_list[-1])
-            counter += 1
-            if counter > 1e3: break
-
-        # List of MTOW values [kg]
-        return mtow_list
-
-
-    def iterate_first_sizing(self, mission: Mission):
-        """ Perform one step in the first sizing loop [p.86]
-
-        TODO: Solidity: Blade loading diagram instead of constant chord
-        TODO: Opt. radius: Consider more factors?
-        """
-        # ---- Main rotor sizing [pp.98-172] ----------------------------------
-
-        # Rotor radius for min. power in hover
         weight = self.mtow * self.gravity
+        
+        # Main rotor
         self.main_rotor.radius = self.main_rotor.get_min_power_radius(
             mission.density, thrust=weight)
-
-        # ---- Preliminary performance estimation [p.175] ---------------------
-
-        # Hover power
-        induced_power = self.main_rotor.get_induced_power_hover(
-            mission.density, thrust=weight)
-        profile_power = self.main_rotor.get_profile_power(
-            mission.density, advance_ratio=0)
-        self.hover_power = induced_power + profile_power
-
-        # ---- Mass estimation incl. fuel [pp.177-179] ------------------------
-
-        # Fuel consumption in hover, empty weight
-        self.fuel_mass = self.sfc * 1.1 * self.hover_power * mission.duration
-        self.empty_weight = sum(self.mass_estimation(
-            power=self.hover_power).values())
-        self.mtow = (self.empty_weight + self.fuel_mass + mission.payload 
-                     + mission.crew_mass)
-
-        # Disc loading and FM [pp.181-183]
-        weight = self.mtow * self.gravity
         self.main_rotor.disc_loading = self.main_rotor.get_disc_loading(
             thrust=weight)
-        self.main_rotor.figure_of_merit = self.main_rotor.get_figure_of_merit(
-            induced_power, profile_power)
 
 
-    def iterate_second_sizing(self, mission: Mission):
-        """ Perform one step in the second sizing loop. [p.86]
-
-        TODO: Solidity: Empirical reference instead of constant chord
-        TODO: How should the download factor be considered? What counts as slow 
-            flight?
-        TODO: Engine calc., SFC = f(P) [p.310]
-        TODO: Conditions at the beginning of each segment assumed. Half 
-            altitude for climb?
+    def tail_rotor_sizing(self):
+        """ Determine tail rotor radius according to Layton [pp.204-213]
         """
-        # ---- Tail rotor design [pp.204-213] ---------------------------------
-
-        # Tail rotor design according to Layton
+        # Tail rotor
         self.tail_rotor.radius = 0.4 * np.sqrt(2.2 * self.mtow * 1e-3)
 
-        # ---- Refined performance calculation [pp.251-321] -------------------
 
+    def refined_performance(self, mission: Mission):
+        """ Determine power comsumption based on the current mission segment
+        [pp.251-321]
+        """
         # Flight state
         self.drag = self.get_fuselage_drag(
             mission.density, mission.flight_speed)
@@ -231,20 +167,23 @@ class Helicopter(Aircraft):
         # Engine requirement [p.298]
         temperature_ratio = mission.temperature / 288.15
         pressure_ratio = mission.pressure / 101325
-        power_msl = (self.total_power * np.sqrt(temperature_ratio) 
-                     / pressure_ratio)
+        self.power_msl = (self.total_power * np.sqrt(temperature_ratio) 
+                          / pressure_ratio)
 
-        # ---- Refined mass estimation [pp.324-325] ---------------------------
-        
-        # Fuel mass, empty weight
+
+    def mass_estimation(self, mission: Mission):
+        """ Mass estimation incl. fuel [pp.324-325]
+        """
         self.fuel_mass = (self.sfc * 1.1 * self.total_power * mission.duration)
-        self.empty_weight = sum(self.mass_estimation(power=power_msl).values())
+        self.empty_weight = sum(self.empty_weight_estimation(
+            power=self.power_msl).values())
         self.mtow = (self.empty_weight + self.fuel_mass + mission.payload 
                      + mission.crew_mass)
 
 
-    def mass_estimation(self, power):
-        """ Estimate component masses of medium helicopters. [pp.408-416]
+    def empty_weight_estimation(self, power):
+        """ Estimate empty weight components of medium helicopters. 
+        [pp.408-416]
 
         Requires:
             Fuel mass (self.fuel_mass)
