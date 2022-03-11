@@ -11,7 +11,7 @@ class Rotor:
     """
     """
     def __init__(self, rotor_data: dict):
-        
+        # Get values from rotor data dict (default None, if key is unavailable)
         self.radius               = rotor_data.get('Radius')
         self.number_of_blades     = rotor_data.get('Number of blades')
         self.chord                = rotor_data.get('Chord')
