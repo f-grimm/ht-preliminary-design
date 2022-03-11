@@ -152,7 +152,6 @@ class Helicopter(Aircraft):
         # ---- Main rotor sizing [pp.98-172] ----------------------------------
 
         # Rotor radius for min. power in hover
-        self.main_rotor.solidity = self.main_rotor.get_solidity()
         weight = self.mtow * self.gravity
         self.main_rotor.radius = self.main_rotor.get_min_power_radius(
             mission.density, thrust=weight)
@@ -197,7 +196,6 @@ class Helicopter(Aircraft):
 
         # Tail rotor design according to Layton
         self.tail_rotor.radius = 0.4 * np.sqrt(2.2 * self.mtow * 1e-3)
-        self.tail_rotor.solidity = self.tail_rotor.get_solidity()
 
         # ---- Refined performance calculation [pp.251-321] -------------------
 
@@ -251,11 +249,12 @@ class Helicopter(Aircraft):
         Requires:
             Fuel mass (self.fuel_mass)
         """
-        # Wetted fuselage surface [m^2]
+        # Wetted fuselage surface [m^2] and chord [m]
         wetted_surface = 59.09386 * np.exp(0.0000194463 * self.mtow)
+        chord = self.main_rotor.get_chord()
         
         # Mass estimation [kg]
-        m_mr = (33 * self.main_rotor.radius * self.main_rotor.chord 
+        m_mr = (33 * self.main_rotor.radius * chord 
                 * self.main_rotor.number_of_blades + 16)
         m_tr = 0.003942 * self.mtow + 5.66
         m_fus_t = 0.11907 * self.mtow - 66.666

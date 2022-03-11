@@ -25,8 +25,8 @@ class Rotor:
     def get_chord(self):
         """ Calculate the rotor chord (rectangular approximation).
         """
-        # Solidity [-]
-        return self.number_of_blades * self.chord / (np.pi * self.radius)
+        # Chord [m]
+        return self.solidity * (np.pi * self.radius) / self.number_of_blades 
 
 
     def get_disc_loading(self, thrust):
