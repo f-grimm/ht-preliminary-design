@@ -18,18 +18,18 @@ class Aircraft:
             data = yaml.safe_load(file)
 
         self.name               = data['Name']
-        self.power_available    = data['Engine']['Power available']
-        self.accessory_power    = data['Engine']['Accessory power']
-        self.sfc                = data['Engine']['SFC'] * 1e-3
-        self.download_factor    = data['Fuselage']['Download factor']
-        self.drag_area          = data['Fuselage']['Drag area']
-        self.landing_gear_type  = data['Landing gear']['Type']
-        self.number_of_legs     = data['Landing gear']['Number of legs']
-        self.empty_weight_ratio = data['Misc']['Empty weight ratio']
-        self.eta_transmission   = data['Misc']['Transmission efficiency']
-        self.special_equipment  = data['Misc']['Special equipment']
-        self.number_of_seats    = data['Misc']['Number of seats']
-        self.gravity            = data['Misc']['Gravity']
+        self.power_available    = data['Engine'].get('Power available')
+        self.accessory_power    = data['Engine'].get('Accessory power')
+        self.sfc                = data['Engine'].get('SFC')
+        self.download_factor    = data['Fuselage'].get('Download factor')
+        self.drag_area          = data['Fuselage'].get('Drag area')
+        self.landing_gear_type  = data['Landing gear'].get('Type')
+        self.number_of_legs     = data['Landing gear'].get('Number of legs')
+        self.empty_weight_ratio = data['Misc'].get('Empty weight ratio')
+        self.eta_transmission   = data['Misc'].get('Transmission efficiency')
+        self.special_equipment  = data['Misc'].get('Special equipment', 0)
+        self.number_of_seats    = data['Misc'].get('Number of seats')
+        self.gravity            = data['Misc'].get('Gravity', 9.81)
         
 
     def get_parasite_power(self, density, flight_speed):
