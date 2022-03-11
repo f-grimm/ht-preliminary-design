@@ -1,11 +1,9 @@
 
-Name: Concept 01
+Name: Concept
 
 Main rotor:
     
-    Radius: 6.5 # m
     Number of blades: 4 # -
-    Chord: 0.27 # m
     Solidity: 0.07 # -
 
     Kappa: 1.15 # -
@@ -14,21 +12,13 @@ Main rotor:
 
 Tail rotor:
     
-    Radius: 0.8 # m
-    Number of blades: 4 # -
-    Chord: 0.1 # m
-    Solidity: 0.1 # -
-
-    Kappa: 1.15 # -
-    Zero-lift drag coeff.: 0.011 # -
-    Tip velocity: 213 # ms^-1
     Power fraction: 0.05
 
 Engine:
 
     Power available: 500000 # W
     Accessory power: 48000 # W [p. 271]
-    SFC: 0.35 # 
+    SFC: 0.35 # kg/kWh
 
 Fuselage:
 

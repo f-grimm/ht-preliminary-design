@@ -11,20 +11,19 @@ class Rotor:
     """
     """
     def __init__(self, rotor_data: dict):
-        self.radius               = rotor_data['Radius']
-        self.number_of_blades     = rotor_data['Number of blades']
-        self.chord                = rotor_data['Chord']
-        self.solidity             = rotor_data['Solidity']
-        self.kappa                = rotor_data['Kappa']
-        self.zero_lift_drag_coeff = rotor_data['Zero-lift drag coeff.']
-        self.tip_velocity         = rotor_data['Tip velocity']
+        
+        self.radius               = rotor_data.get('Radius')
+        self.number_of_blades     = rotor_data.get('Number of blades')
+        self.chord                = rotor_data.get('Chord')
+        self.solidity             = rotor_data.get('Solidity')
+        self.kappa                = rotor_data.get('Kappa')
+        self.zero_lift_drag_coeff = rotor_data.get('Zero-lift drag coeff.')
+        self.tip_velocity         = rotor_data.get('Tip velocity')
+        self.power_fraction       = rotor_data.get('Power fraction')
 
-        if 'Power fraction' in rotor_data:
-            self.power_fraction = rotor_data['Power fraction']
 
-
-    def get_solidity(self):
-        """ Calculate the rotor solidity (rectangular approximation).
+    def get_chord(self):
+        """ Calculate the rotor chord (rectangular approximation).
         """
         # Solidity [-]
         return self.number_of_blades * self.chord / (np.pi * self.radius)
