@@ -18,7 +18,7 @@ Engine:
 
     Power available: 500000 # W
     Accessory power: 48000 # W [p. 271]
-    SFC: 0.35 # kg/kWh
+    SFC: 0.00035 # kg/Wh
 
 Fuselage:
 
