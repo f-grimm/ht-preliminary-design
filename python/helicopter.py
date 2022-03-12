@@ -126,21 +126,19 @@ class Helicopter(Aircraft):
         drag = self.get_fuselage_drag(mission.density, mission.flight_speed)
         alpha = self.get_angle_of_attack(drag, mission.climb_angle)
         thrust = self.get_thrust(drag, alpha, mission.climb_angle)
-        advance_ratio = (mission.flight_speed / self.main_rotor.tip_velocity)
+        advance_ratio = mission.flight_speed / self.main_rotor.tip_velocity
         induced_velocity = (self.main_rotor.get_induced_velocity(
                 mission.density, mission.flight_speed, alpha, thrust))
 
         # Power calculation
-        induced_power_oge = (self.main_rotor.kappa * thrust * induced_velocity)
-        induced_power_ige = self.main_rotor.in_ground_effect(
-            induced_power_oge, mission.height, advance_ratio)
+        induced_power = self.main_rotor.kappa * thrust * induced_velocity
         profile_power = self.main_rotor.get_profile_power(
             mission.density, advance_ratio)
         parasite_power = self.get_parasite_power(
             mission.density, mission.flight_speed)
         climb_power = self.get_climb_power(
             mission.flight_speed, mission.climb_angle)
-        main_rotor_power = (induced_power_ige + profile_power + parasite_power 
+        main_rotor_power = (induced_power + profile_power + parasite_power 
                             + climb_power)
         tail_rotor_power = self.tail_rotor.power_fraction * main_rotor_power
         transmission_losses = (((1 / self.eta_transmission) - 1) 
@@ -163,8 +161,8 @@ class Helicopter(Aircraft):
 
 
     def mass_estimation(self, mission: Mission):
-        """ Determine the fuel mass based on the required power, empty weight, 
-        and the new maximum take-off weight [pp.324-325]
+        """ Determine the fuel mass, empty weight, and new maximum take-off 
+        weight [pp.324-325]
         """
         self.fuel_mass = (self.sfc * 1.1 * self.power['total'] 
                           * mission.duration)
