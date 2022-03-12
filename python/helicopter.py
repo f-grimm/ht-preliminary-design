@@ -125,10 +125,11 @@ class Helicopter(Aircraft):
         # Flight state
         drag = self.get_fuselage_drag(mission.density, mission.flight_speed)
         alpha = self.get_angle_of_attack(drag, mission.climb_angle)
-        thrust = self.get_thrust(drag, alpha, mission.climb_angle)
         advance_ratio = mission.flight_speed / self.main_rotor.tip_velocity
-        induced_velocity = (self.main_rotor.get_induced_velocity(
-                mission.density, mission.flight_speed, alpha, thrust))
+        thrust = self.get_thrust(
+            drag, alpha, mission.climb_angle, advance_ratio)
+        induced_velocity = self.main_rotor.get_induced_velocity(
+                mission.density, mission.flight_speed, alpha, thrust)
 
         # Power calculation
         induced_power = self.main_rotor.kappa * thrust * induced_velocity
@@ -166,8 +167,8 @@ class Helicopter(Aircraft):
         """
         self.fuel_mass = (self.sfc * 1.1 * self.power['total'] 
                           * mission.duration)
-        self.empty_weight = sum(self.empty_weight_estimation(
-            power=self.power['msl']).values())
+        self.empty_weight = sum([m for m in self.empty_weight_estimation(
+            power=self.power['msl']).values() if m > 0])
         self.mtow = (self.empty_weight + self.fuel_mass + mission.payload 
                      + mission.crew_mass)
 
