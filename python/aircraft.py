@@ -40,13 +40,14 @@ class Aircraft:
         return (0.5 * density * flight_speed ** 3 * self.drag_area)
 
 
-    def get_climb_power(self, flight_speed, climb_angle):
-        """ Claculate the climb power due to change in potential energy.
+    def get_climb_power(self, flight_speed, gamma):
+        """ Claculate the climb power due to change in potential energy. Climb 
+        angle gamma in [rad].
         """
         weight = self.mtow * self.gravity
 
         # Climb power [W]
-        return (weight * flight_speed * np.sin(climb_angle))
+        return (weight * flight_speed * np.sin(gamma))
 
 
     def get_fuselage_drag(self, density, flight_speed):
@@ -56,8 +57,10 @@ class Aircraft:
         return (0.5 * density * flight_speed ** 2 * self.drag_area)
 
 
-    def get_thrust(self, climb_angle):
-        """ Calculate the required thrust in translatory motion.
+    def get_thrust(self, drag, alpha, gamma):
+        """ Calculate the required thrust in translatory motion. Angle of 
+        attack alpha (relative to the flight path) and climb angle gamma in 
+        [rad].
         Eq.:
             T sin(-alpha) = D + W sin(gamma)   (1) +
             T cos(-alpha) = W cos(gamma)       (2)
@@ -65,20 +68,19 @@ class Aircraft:
         weight = self.mtow * self.gravity
 
         # Thrust [N]
-        return ((self.drag + weight * (np.sin(climb_angle) 
-                 + np.cos(climb_angle))) 
-                / (np.cos(self.alpha) - np.sin(self.alpha)))
+        return ((drag + weight * (np.sin(gamma) + np.cos(gamma))) 
+                / (np.cos(alpha) - np.sin(alpha)))
 
 
-    def get_angle_of_attack(self, climb_angle):
+    def get_angle_of_attack(self, drag, gamma):
         """ Calculate the angle of attack based on a force balance with thrust,
-        weight, and fuselage drag.
+        weight, and fuselage drag. Climb angle gamma in [rad].
         """
         weight = self.mtow * self.gravity
 
         # Angle of attack [rad]
         return - np.arctan(
-            (self.drag + weight * np.sin(climb_angle)) 
-            / (weight * np.cos(climb_angle)))
+            (drag + weight * np.sin(gamma)) 
+            / (weight * np.cos(gamma)))
 
 
