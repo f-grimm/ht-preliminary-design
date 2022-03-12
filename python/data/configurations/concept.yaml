@@ -5,10 +5,10 @@ Main rotor:
     
     Number of blades: 4 # -
     Solidity: 0.07 # -
-
     Kappa: 1.15 # -
     Zero-lift drag coeff.: 0.011 # -
     Tip velocity: 213 # ms^-1
+    Installation height: 3.15 # m
 
 Tail rotor:
     
