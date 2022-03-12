@@ -71,13 +71,15 @@ class Helicopter(Aircraft):
                 + f'Iterations: {len(mtow_list) - 1}\n\n'
                 + f' - Main rotor radius: {self.main_rotor.radius:14.2f} m\n'
                 + f' - Tail rotor radius: {self.tail_rotor.radius:14.2f} m\n'
-                + f' - Drag: {self.drag:27.2f} N\n'
-                + f' - Thrust: {self.thrust:25.2f} N\n'
-                + f' - Angle of attack: {self.alpha * 180 / np.pi:16.2f} deg\n'
-                + f' - Advance ratio: {self.advance_ratio:18.2f} -\n'
+                + f' - Drag: {self.flight_state["drag"]:27.2f} N\n'
+                + f' - Thrust: {self.flight_state["thrust"]:25.2f} N\n'
+                + f' - Angle of attack: '
+                    + f'{self.flight_state["alpha"] * 180 / np.pi:16.2f} deg\n'
+                + f' - Advance ratio: '
+                    + f'{self.flight_state["advance ratio"]:18.2f} -\n'
                 + f' - Induced velocity: '
-                    + f'{self.main_rotor.induced_velocity:15.2f} m/s\n'
-                + f' - Total power: {(self.total_power * 1e-3):20.2f} kW\n'
+                    + f'{self.flight_state["induced velocity"]:15.2f} m/s\n'
+                + f' - Total power: {(self.power["total"] * 1e-3):20.2f} kW\n'
                 + f' - MTOW: {self.mtow:27.2f} kg\n')
 
             # Plots
@@ -97,8 +99,8 @@ class Helicopter(Aircraft):
 
 
     def main_rotor_sizing(self, mission: Mission):
-        """ Determine main rotor radius and disc loading; optimized for min. 
-        power in hover [pp.98-172]
+        """ Determine the main rotor radius and disc loading; optimized for 
+        min. power in hover [pp.98-172]
         """
         weight = self.mtow * self.gravity
         
@@ -110,58 +112,64 @@ class Helicopter(Aircraft):
 
 
     def tail_rotor_sizing(self):
-        """ Determine tail rotor radius according to Layton [pp.204-213]
+        """ Determine the tail rotor radius according to Layton [pp.204-213]
         """
         # Tail rotor
         self.tail_rotor.radius = 0.4 * np.sqrt(2.2 * self.mtow * 1e-3)
 
 
     def refined_performance(self, mission: Mission):
-        """ Determine power comsumption based on the current mission segment
-        [pp.251-321]
+        """ Determine the power comsumption based on the current mission 
+        segment [pp.251-321]
         """
         # Flight state
-        self.drag = self.get_fuselage_drag(
-            mission.density, mission.flight_speed)
-        self.alpha = self.get_angle_of_attack(mission.climb_angle)
-        self.thrust = self.get_thrust(mission.climb_angle)
-        self.advance_ratio = (mission.flight_speed 
-                              / self.main_rotor.tip_velocity)
-        self.main_rotor.induced_velocity = (
-            self.main_rotor.get_induced_velocity(
-                mission.density, mission.flight_speed, self.alpha, 
-                self.thrust))
+        drag = self.get_fuselage_drag(mission.density, mission.flight_speed)
+        alpha = self.get_angle_of_attack(drag, mission.climb_angle)
+        thrust = self.get_thrust(drag, alpha, mission.climb_angle)
+        advance_ratio = (mission.flight_speed / self.main_rotor.tip_velocity)
+        induced_velocity = (self.main_rotor.get_induced_velocity(
+                mission.density, mission.flight_speed, alpha, thrust))
 
         # Power calculation
-        induced_power = (self.main_rotor.kappa * self.thrust 
-                         * self.main_rotor.induced_velocity)
+        induced_power_oge = (self.main_rotor.kappa * thrust * induced_velocity)
+        induced_power_ige = self.main_rotor.in_ground_effect(
+            induced_power_oge, mission.height, advance_ratio)
         profile_power = self.main_rotor.get_profile_power(
-            mission.density, self.advance_ratio)
+            mission.density, advance_ratio)
         parasite_power = self.get_parasite_power(
             mission.density, mission.flight_speed)
         climb_power = self.get_climb_power(
             mission.flight_speed, mission.climb_angle)
-        main_rotor_power = (induced_power + profile_power + parasite_power 
+        main_rotor_power = (induced_power_ige + profile_power + parasite_power 
                             + climb_power)
         tail_rotor_power = self.tail_rotor.power_fraction * main_rotor_power
         transmission_losses = (((1 / self.eta_transmission) - 1) 
                                * main_rotor_power)
-        self.total_power = (main_rotor_power + tail_rotor_power 
-                            + transmission_losses + self.accessory_power)
+        total_power = (main_rotor_power + tail_rotor_power 
+                       + transmission_losses + self.accessory_power)
 
         # Engine requirement [p.298]
         temperature_ratio = mission.temperature / 288.15
         pressure_ratio = mission.pressure / 101325
-        self.power_msl = (self.total_power * np.sqrt(temperature_ratio) 
-                          / pressure_ratio)
+        power_msl = (total_power * np.sqrt(temperature_ratio) 
+                     / pressure_ratio)
+
+        # Save current flight state and power requirement
+        self.flight_state = {
+            'advance ratio': advance_ratio, 'drag': drag, 'alpha': alpha, 
+            'thrust': thrust, 'induced velocity': induced_velocity}
+        self.power = {
+            'total': total_power, 'msl': power_msl}
 
 
     def mass_estimation(self, mission: Mission):
-        """ Mass estimation incl. fuel [pp.324-325]
+        """ Determine the fuel mass based on the required power, empty weight, 
+        and the new maximum take-off weight [pp.324-325]
         """
-        self.fuel_mass = (self.sfc * 1.1 * self.total_power * mission.duration)
+        self.fuel_mass = (self.sfc * 1.1 * self.power['total'] 
+                          * mission.duration)
         self.empty_weight = sum(self.empty_weight_estimation(
-            power=self.power_msl).values())
+            power=self.power['msl']).values())
         self.mtow = (self.empty_weight + self.fuel_mass + mission.payload 
                      + mission.crew_mass)
 
