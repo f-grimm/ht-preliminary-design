@@ -80,6 +80,7 @@ class Helicopter(Aircraft):
                 + f' - Induced velocity: '
                     + f'{self.flight_state["induced velocity"]:15.2f} m/s\n'
                 + f' - Total power: {(self.power["total"] * 1e-3):20.2f} kW\n'
+                + f' - Empty weight: {self.empty_weight:19.2f} kg\n'
                 + f' - MTOW: {self.mtow:27.2f} kg\n')
 
             # Plots
