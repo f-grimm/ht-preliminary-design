@@ -18,8 +18,6 @@ class Helicopter(Aircraft):
     Requires:
         Main rotor
         Tail rotor
-
-    TODO: Engine calc., SFC = f(P) [p.310]
     """
     def __init__(self, filename: str):      
         # Initialize aircraft level attributes
@@ -39,52 +37,7 @@ class Helicopter(Aircraft):
         """
         # Set the mission segment as defined in _main
         mission.set_mission_segment(segment)
-
-        if logs:
-            print('\nPreliminary Design\n' + '-' * 18)
-            print(f'\nAicraft: {self.name}')
-            print(f'Mission: {mission.name}')
-            print(f'Segment: {mission.segment} '
-                  + f'({mission.height:.0f}m, '
-                  + f'{mission.duration:.2f}h, '
-                  + f'{mission.flight_speed:.0f}m/s)')
-            
-        # Sizing calculation
-        mtow_list = self.sizing(mission)
-
-        if logs:
-            print(f'\nIterations: {len(mtow_list) - 1}')
-            print(f'\n - Main rotor radius: {self.main_rotor.radius:14.2f} m')
-            print(f' - Tail rotor radius: {self.tail_rotor.radius:14.2f} m')
-            print(f' - Drag: {self.drag:27.2f} N')
-            print(f' - Thrust: {self.thrust:25.2f} N')
-            print(f' - Angle of attack: {self.alpha * 180 / np.pi:16.2f} deg')
-            print(f' - Advance ratio: {self.advance_ratio:18.2f} -')
-            print(' - Induced velocity: '
-                  + f'{self.main_rotor.induced_velocity:15.2f} m/s')
-            print(f' - Total power: {(self.total_power * 1e-3):20.2f} kW')
-            print(f' - MTOW: {self.mtow:27.2f} kg')
-            print('')
-
-            # Plots
-            self.plot_mtow_convergence(mtow_list)
-            self.plot_powers(mission.density, 80)
-
-
-    def get_initial_mtow(self, mission: Mission):
-        """ Estimate the initial maximum take-off weight based on the mission 
-        profile; (SFC and empty weight ratio are constant). [pp.90-91]
-        """
-        fuel_mass = (self.sfc * self.power_available * mission.duration)
-        useful_load = (fuel_mass + mission.payload + mission.crew_mass)
-
-        # MTOW [kg]
-        return useful_load / (1 - self.empty_weight_ratio)
-
-
-    def sizing(self, mission: Mission):
-        """ 
-        """
+        
         # Estimate MTOW
         self.mtow = self.get_initial_mtow(mission)
 
@@ -107,8 +60,40 @@ class Helicopter(Aircraft):
             counter += 1
             if counter > 1e3: raise ValueError('No convergence.')
 
-        # List of MTOW values [kg]
-        return mtow_list
+        if logs:
+            print(
+                '\nPreliminary Design\n' + '-' * 18 + '\n\n'
+                + f'Aicraft: {self.name}\n'
+                + f'Mission: {mission.name}\n'
+                + f'Segment: {mission.segment} ' 
+                    + f'({mission.height:.0f}m, {mission.duration:.2f}h, '
+                    + f'{mission.flight_speed:.0f}m/s)\n\n'
+                + f'Iterations: {len(mtow_list) - 1}\n\n'
+                + f' - Main rotor radius: {self.main_rotor.radius:14.2f} m\n'
+                + f' - Tail rotor radius: {self.tail_rotor.radius:14.2f} m\n'
+                + f' - Drag: {self.drag:27.2f} N\n'
+                + f' - Thrust: {self.thrust:25.2f} N\n'
+                + f' - Angle of attack: {self.alpha * 180 / np.pi:16.2f} deg\n'
+                + f' - Advance ratio: {self.advance_ratio:18.2f} -\n'
+                + f' - Induced velocity: '
+                    + f'{self.main_rotor.induced_velocity:15.2f} m/s\n'
+                + f' - Total power: {(self.total_power * 1e-3):20.2f} kW\n'
+                + f' - MTOW: {self.mtow:27.2f} kg\n')
+
+            # Plots
+            self.plot_mtow_convergence(mtow_list)
+            self.plot_powers(mission.density, 80)
+
+
+    def get_initial_mtow(self, mission: Mission):
+        """ Estimate the initial maximum take-off weight based on the mission 
+        profile; (SFC and empty weight ratio are constant). [pp.90-91]
+        """
+        fuel_mass = (self.sfc * self.power_available * mission.duration)
+        useful_load = (fuel_mass + mission.payload + mission.crew_mass)
+
+        # MTOW [kg]
+        return useful_load / (1 - self.empty_weight_ratio)
 
 
     def main_rotor_sizing(self, mission: Mission):
