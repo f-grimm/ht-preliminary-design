@@ -86,6 +86,7 @@ class Helicopter(Aircraft):
             # Plots
             self.plot_mtow_convergence(mtow_list)
             self.plot_powers(mission.density, 80)
+            mission.plot_mission()
 
 
     def get_initial_mtow(self, mission: Mission):
