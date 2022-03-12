@@ -15,12 +15,12 @@ from mission import Mission
 concept = Helicopter('concept')
 
 # Load mission from YAML file (exercise_9, hover_cruise)
-mission = Mission('hover_cruise') 
+mission = Mission('exercise_9') 
 
 # Start premilinary design
 concept.preliminary_design(mission, segment=1, logs=True)
 
 # Plot mission profile
-# mission.plot_mission()
+mission.plot_mission()
 
 
