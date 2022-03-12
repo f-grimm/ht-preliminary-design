@@ -102,14 +102,19 @@ class Rotor:
                   ** (1 / 3))
 
 
-    def in_ground_effect(self, induced_power_oge, rotor_height):
+    def in_ground_effect(self, induced_power, height, advance_ratio):
         """ Calculate the required hover power in ground effect (IGE) according 
-        to Hayden. [p. 288]
+        to Hayden. Linear decline until advance ratio 0.5 is assumed [p. 288]
         """
-        k_G = 1 / (0.9926 + 0.0379 * (2 * self.radius / rotor_height) ** 2)
+        if abs(advance_ratio) > 0.5:
+            k_G = 1
+        else:
+            z_R = self.installation_height + height
+            k_G = 1 / (0.9926 + 0.0379 * (2 * self.radius / z_R) ** 2)
+            k_G_mu = k_G + abs(advance_ratio) / 0.5 * (1 - k_G)
 
         # Power in ground effect [W]
-        return k_G * induced_power_oge
+        return k_G_mu * induced_power
 
 
 
