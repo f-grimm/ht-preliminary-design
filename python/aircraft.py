@@ -42,7 +42,7 @@ class Aircraft:
 
     def get_climb_power(self, flight_speed, gamma):
         """ Claculate the climb power due to change in potential energy. Climb 
-        angle gamma in [rad].
+        angle gamma in rad.
         """
         weight = self.mtow * self.gravity
 
@@ -57,24 +57,30 @@ class Aircraft:
         return (0.5 * density * flight_speed ** 2 * self.drag_area)
 
 
-    def get_thrust(self, drag, alpha, gamma):
+    def get_thrust(self, drag, alpha, gamma, advance_ratio):
         """ Calculate the required thrust in translatory motion. Angle of 
         attack alpha (relative to the flight path) and climb angle gamma in 
-        [rad].
+        rad. Assuming linear decline of the download factor until advance ratio
+        0.5.
+
         Eq.:
             T sin(-alpha) = D + W sin(gamma)   (1) +
             T cos(-alpha) = W cos(gamma)       (2)
         """
         weight = self.mtow * self.gravity
+        
+        # Download factor
+        if abs(advance_ratio) > 0.5: k_DL = 0
+        else: k_DL = (1 - abs(advance_ratio) / 0.5) * self.download_factor
 
         # Thrust [N]
         return ((drag + weight * (np.sin(gamma) + np.cos(gamma))) 
-                / (np.cos(alpha) - np.sin(alpha)))
+                / (np.cos(alpha) - np.sin(alpha))) / (1 - k_DL)
 
 
     def get_angle_of_attack(self, drag, gamma):
         """ Calculate the angle of attack based on a force balance with thrust,
-        weight, and fuselage drag. Climb angle gamma in [rad].
+        weight, and fuselage drag. Climb angle gamma in rad.
         """
         weight = self.mtow * self.gravity
 
