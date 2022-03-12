@@ -6,6 +6,7 @@ Created on 2022-01-30
 """
 
 import numpy as np
+from scipy import optimize
 
 class Rotor:
     """
@@ -20,6 +21,7 @@ class Rotor:
         self.zero_lift_drag_coeff = rotor_data.get('Zero-lift drag coeff.')
         self.tip_velocity         = rotor_data.get('Tip velocity')
         self.power_fraction       = rotor_data.get('Power fraction')
+        self.installation_height  = rotor_data.get('Installation height')
 
 
     def get_chord(self):
@@ -55,24 +57,18 @@ class Rotor:
 
     def get_induced_velocity(self, density, v_inf, alpha, thrust):
         """ Calculate the induced velocity iteratively in forward flight (not 
-        valid for low sink rate in axial flight) [p. 253]
+        valid for low sink rate in axial flight). U represents the vector sum 
+        of induced velocity v_i and incoming velocity v_inf. [p. 253]
         """
         area = np.pi * self.radius ** 2
-        v_i = np.sqrt(thrust / (2 * density * area))
-        counter = 0
-        error = 1
-
-        while error > 1e-4:
-            combined_velocity = np.sqrt(
+        
+        def induced_velocity(v_i):
+            U = np.sqrt(
                 v_inf ** 2 - 2 * v_inf * v_i * np.sin(alpha) + v_i ** 2)
-            v_i_new = thrust / (2 * density * area * combined_velocity)
-            error = abs((v_i_new - v_i) / v_i)
-            v_i = v_i_new
-            counter += 1
-            if counter > 1e6: raise ValueError('No convergence.')
+            return thrust / (2 * density * area * U)
 
         # Induced velocity [m/s]
-        return v_i
+        return optimize.fixed_point(induced_velocity, 1)
 
 
     def get_induced_velocity_level(self, density, v_inf, thrust):
