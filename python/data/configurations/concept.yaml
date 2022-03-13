@@ -8,7 +8,6 @@ Main rotor:
     Kappa: 1.15 # -
     Zero-lift drag coeff.: 0.011 # -
     Tip velocity: 213 # ms^-1
-    Installation height: 3.15 # m
 
 Tail rotor:
     
