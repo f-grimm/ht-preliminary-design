@@ -280,7 +280,6 @@ class Helicopter(Aircraft):
         fig.tight_layout()
         ax.legend()
         ax.grid()
-        plt.show()
 
 
     def plot_mtow_convergence(self, mtow_list: list):
@@ -294,6 +293,59 @@ class Helicopter(Aircraft):
         ax.set_ylabel('MTOW [kg]')
         fig.tight_layout()
         ax.grid()
-        plt.show()
+
+
+    def plot_masses(self, masses: dict):
+        """ Plot mass composition (empty weight, fuel, crew, payload) in a pie 
+        chart.
+        """
+        # Data
+        labels = [name.capitalize() for name in masses.keys()]
+        sizes = masses.values()
+        explode = (0, 0, 0.2, 0)
+
+        # Figure, plot
+        fig, ax = plt.subplots(figsize=(5, 4))
+        ax.set_title('Maximum take-off weight', fontweight='bold', pad=15)
+        ax.set_prop_cycle('color', plt.cm.get_cmap('Set2').colors)
+        ax.pie(
+            sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+            shadow=False, startangle=90, wedgeprops=dict(width=0.4),
+            pctdistance=0.80)
+        ax.margins(0.2, 0.2)
+        ax.axis('equal')
+
+
+    def plot_empty_weight_comp(self, empty_weight_comp: dict):
+        """ Plot empty weight components in a pie chart.
+        """
+        # Data
+        labels = list(empty_weight_comp.keys())
+        sizes = [m if m > 0 else 0 for m in empty_weight_comp.values()]
+        total = sum(sizes)
+        label_first_n = 6
+        for i in range(len(labels)):
+            labels[i] = (labels[i].capitalize() 
+                        + f' ({sizes[i] / total * 100:.1f}%)')
+
+        # Figure, plot
+        fig = plt.figure(figsize=(9.5, 4))
+        ax = fig.add_subplot(121)
+        ax.set_title('Empty weight', fontweight='bold', pad=15)
+        ax.set_prop_cycle(
+            'color', plt.cm.get_cmap('Set3').colors 
+            + plt.cm.get_cmap('Pastel1').colors)
+        pie = ax.pie(
+            sizes, labels=labels[:label_first_n] + [''] 
+            * (len(labels) - label_first_n), autopct=None, shadow=False, 
+            startangle=90, wedgeprops=dict(width=0.4), pctdistance=0.80)
+        ax2 = fig.add_subplot(122)
+        ax2.axis('off')
+        ax2.legend(
+            pie[0][:(label_first_n - 1):-1], labels[:(label_first_n - 1):-1], 
+            loc='center right')
+        plt.subplots_adjust(wspace=-0.2)
+        ax.margins(0.2, 0.2)
+        ax.axis('equal')
 
 
