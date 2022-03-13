@@ -57,27 +57,33 @@ class Aircraft:
         return 0.5 * density * flight_speed ** 2 * self.drag_area
 
 
-    def get_thrust(self, drag, alpha, gamma, advance_ratio):
-        """ Calculate the required thrust in translatory motion. Angle of 
+    def get_thrust(self, drag, alpha, gamma):
+        """ Calculate the required thrust in forward flight or climb. Angle of 
         attack alpha (relative to the flight path) and climb angle gamma in 
-        rad. Assuming linear decline of the download factor until advance ratio
-        0.5.
+        rad.
 
         Eq.:
             T sin(-alpha) = D + W sin(gamma)   (1) +
             T cos(-alpha) = W cos(gamma)       (2)
         """
         weight = self.mtow * self.gravity
-        
-        # Download factor
+
+        # Thrust [N]
+        return ((drag + weight * (np.sin(gamma) + np.cos(gamma))) 
+                / (np.cos(alpha) - np.sin(alpha)))
+
+
+    def get_download_factor(self, advance_ratio):
+        """ Calculate the download factor, considering a linear decline until
+        advance ratio 0.5. 
+        """
         if abs(advance_ratio) < 0.5: 
             k_DL = (1 - abs(advance_ratio) / 0.5) * self.download_factor
         else: 
             k_DL = 0
-
-        # Thrust [N]
-        return ((drag + weight * (np.sin(gamma) + np.cos(gamma))) 
-                / (np.cos(alpha) - np.sin(alpha))) / (1 - k_DL)
+            
+        # Donwload factor [-]
+        return k_DL
 
 
     def get_angle_of_attack(self, drag, gamma):

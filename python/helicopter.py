@@ -74,6 +74,8 @@ class Helicopter(Aircraft):
                 + f' - Tail rotor radius: {self.tail_rotor.radius:14.2f} m\n'
                 + f' - Drag: {flight_state["drag"]:27.2f} N\n'
                 + f' - Thrust: {flight_state["thrust"]:25.2f} N\n'
+                + f' - Dowmload factor: '
+                    + f'{flight_state["download factor"] * 100:16.2f} %\n'
                 + f' - Angle of attack: '
                     + f'{flight_state["alpha"] * 180 / np.pi:16.2f} deg\n'
                 + f' - Advance ratio: '
@@ -130,8 +132,9 @@ class Helicopter(Aircraft):
         drag = self.get_fuselage_drag(mission.density, mission.flight_speed)
         alpha = self.get_angle_of_attack(drag, mission.climb_angle)
         advance_ratio = mission.flight_speed / self.main_rotor.tip_velocity
+        k_DL = self.get_download_factor(advance_ratio)
         thrust = self.get_thrust(
-            drag, alpha, mission.climb_angle, advance_ratio)
+            drag, alpha, mission.climb_angle) / (1 - k_DL)
         induced_velocity = self.main_rotor.get_induced_velocity(
                 mission.density, mission.flight_speed, alpha, thrust)
 
@@ -164,7 +167,8 @@ class Helicopter(Aircraft):
              'climb': climb_power, 'transmission': transmission_losses, 
              'parasite': parasite_power, 'accessory': self.accessory_power},
             {'advance ratio': advance_ratio, 'drag': drag, 'alpha': alpha, 
-             'thrust': thrust, 'induced velocity': induced_velocity})
+             'thrust': thrust, 'induced velocity': induced_velocity,
+             'download factor': k_DL})
 
 
     def mass_estimation(self, powers: dict, mission: Mission):
