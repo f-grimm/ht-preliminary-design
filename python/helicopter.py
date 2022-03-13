@@ -99,8 +99,8 @@ class Helicopter(Aircraft):
         """ Estimate the initial maximum take-off weight based on the mission 
         profile; (SFC and empty weight ratio are constant). [pp.90-91]
         """
-        fuel_mass = (self.sfc * self.power_available * mission.duration)
-        useful_load = (fuel_mass + mission.payload + mission.crew_mass)
+        fuel_mass = self.sfc * self.power_available * mission.duration
+        useful_load = fuel_mass + mission.payload + mission.crew_mass
 
         # MTOW [kg]
         self.mtow = useful_load / (1 - self.empty_weight_ratio)
