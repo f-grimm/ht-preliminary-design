@@ -11,6 +11,7 @@ from rotor import Rotor
 import yaml
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import cm
 
 class Helicopter(Aircraft):
     """ Aircraft sub-class for conventional helicopter configurations.
@@ -39,7 +40,7 @@ class Helicopter(Aircraft):
         mission.set_mission_segment(segment)
         
         # Estimate MTOW
-        self.mtow = self.get_initial_mtow(mission)
+        self.initial_mtow_estimation(mission)
 
         # Initialize design loop
         mtow_list = [self.mtow]
@@ -51,8 +52,8 @@ class Helicopter(Aircraft):
             # Sizing
             self.main_rotor_sizing(mission)
             self.tail_rotor_sizing()
-            self.refined_performance(mission)
-            self.mass_estimation(mission)
+            powers, flight_state = self.refined_performance(mission)
+            masses, empty_weight_comp = self.mass_estimation(powers, mission)
             
             # Check for convergence
             mtow_list.append(self.mtow)
@@ -71,25 +72,28 @@ class Helicopter(Aircraft):
                 + f'Iterations: {len(mtow_list) - 1}\n\n'
                 + f' - Main rotor radius: {self.main_rotor.radius:14.2f} m\n'
                 + f' - Tail rotor radius: {self.tail_rotor.radius:14.2f} m\n'
-                + f' - Drag: {self.flight_state["drag"]:27.2f} N\n'
-                + f' - Thrust: {self.flight_state["thrust"]:25.2f} N\n'
+                + f' - Drag: {flight_state["drag"]:27.2f} N\n'
+                + f' - Thrust: {flight_state["thrust"]:25.2f} N\n'
                 + f' - Angle of attack: '
-                    + f'{self.flight_state["alpha"] * 180 / np.pi:16.2f} deg\n'
+                    + f'{flight_state["alpha"] * 180 / np.pi:16.2f} deg\n'
                 + f' - Advance ratio: '
-                    + f'{self.flight_state["advance ratio"]:18.2f} -\n'
+                    + f'{flight_state["advance ratio"]:18.2f} -\n'
                 + f' - Induced velocity: '
-                    + f'{self.flight_state["induced velocity"]:15.2f} m/s\n'
-                + f' - Total power: {(self.power["total"] * 1e-3):20.2f} kW\n'
-                + f' - Empty weight: {self.empty_weight:19.2f} kg\n'
+                    + f'{flight_state["induced velocity"]:15.2f} m/s\n'
+                + f' - Total power: {(powers["total"] * 1e-3):20.2f} kW\n'
+                + f' - Empty weight: {masses["empty weight"]:19.2f} kg\n'
                 + f' - MTOW: {self.mtow:27.2f} kg\n')
 
             # Plots
-            self.plot_mtow_convergence(mtow_list)
-            self.plot_powers(mission.density, 80)
             mission.plot_mission()
+            self.plot_powers(mission.density, 80)
+            self.plot_mtow_convergence(mtow_list)
+            self.plot_masses(masses)
+            self.plot_empty_weight_comp(empty_weight_comp)
+            plt.show()
 
 
-    def get_initial_mtow(self, mission: Mission):
+    def initial_mtow_estimation(self, mission: Mission):
         """ Estimate the initial maximum take-off weight based on the mission 
         profile; (SFC and empty weight ratio are constant). [pp.90-91]
         """
@@ -97,26 +101,24 @@ class Helicopter(Aircraft):
         useful_load = (fuel_mass + mission.payload + mission.crew_mass)
 
         # MTOW [kg]
-        return useful_load / (1 - self.empty_weight_ratio)
+        self.mtow = useful_load / (1 - self.empty_weight_ratio)
 
 
     def main_rotor_sizing(self, mission: Mission):
-        """ Determine the main rotor radius and disc loading; optimized for 
-        min. power in hover [pp.98-172]
+        """ Determine the main rotor radius; optimized for min. power in hover 
+        [pp.98-172]
         """
         weight = self.mtow * self.gravity
         
-        # Main rotor
+        # Main rotor radius [m]
         self.main_rotor.radius = self.main_rotor.get_min_power_radius(
             mission.density, thrust=weight)
-        self.main_rotor.disc_loading = self.main_rotor.get_disc_loading(
-            thrust=weight)
 
 
     def tail_rotor_sizing(self):
         """ Determine the tail rotor radius according to Layton [pp.204-213]
         """
-        # Tail rotor
+        # Tail rotor radius [m]
         self.tail_rotor.radius = 0.4 * np.sqrt(2.2 * self.mtow * 1e-3)
 
 
@@ -155,32 +157,39 @@ class Helicopter(Aircraft):
         power_msl = (total_power * np.sqrt(temperature_ratio) 
                      / pressure_ratio)
 
-        # Save current flight state and power requirement
-        self.flight_state = {
-            'advance ratio': advance_ratio, 'drag': drag, 'alpha': alpha, 
-            'thrust': thrust, 'induced velocity': induced_velocity}
-        self.power = {
-            'total': total_power, 'msl': power_msl}
+        # Powers [W] and flight state [-, N, rad, N, m/s]
+        return(
+            {'total': total_power, 'msl': power_msl, 'induced': induced_power,
+             'profile': profile_power, 'tail rotor': tail_rotor_power,  
+             'climb': climb_power, 'transmission': transmission_losses, 
+             'parasite': parasite_power, 'accessory': self.accessory_power},
+            {'advance ratio': advance_ratio, 'drag': drag, 'alpha': alpha, 
+             'thrust': thrust, 'induced velocity': induced_velocity})
 
 
-    def mass_estimation(self, mission: Mission):
+    def mass_estimation(self, powers: dict, mission: Mission):
         """ Determine the fuel mass, empty weight, and new maximum take-off 
-        weight [pp.324-325]
+        weight based on the required power [pp.324-325]
         """
-        self.fuel_mass = (self.sfc * 1.1 * self.power['total'] 
-                          * mission.duration)
-        self.empty_weight = sum([m for m in self.empty_weight_estimation(
-            power=self.power['msl']).values() if m > 0])
-        self.mtow = (self.empty_weight + self.fuel_mass + mission.payload 
+        fuel_mass = self.sfc * 1.1 * powers['total'] * mission.duration
+        empty_weight_comp = self.empty_weight_estimation(
+            fuel_mass, power=powers['msl'])
+        empty_weight = sum([m for m in empty_weight_comp.values() if m > 0])
+        
+        # MTOW [kg]
+        self.mtow = (empty_weight + fuel_mass + mission.payload 
                      + mission.crew_mass)
 
+        # Masses and empty weight components [kg]
+        return (
+            {'empty weight': empty_weight, 'fuel': fuel_mass, 
+             'payload': mission.payload, 'crew': mission.crew_mass},
+            empty_weight_comp)
 
-    def empty_weight_estimation(self, power):
+
+    def empty_weight_estimation(self, fuel_mass, power):
         """ Estimate empty weight components of medium helicopters. 
         [pp.408-416]
-
-        Requires:
-            Fuel mass (self.fuel_mass)
         """
         # Wetted fuselage surface [m^2] and chord [m]
         wetted_surface = 59.09386 * np.exp(0.0000194463 * self.mtow)
@@ -194,7 +203,7 @@ class Helicopter(Aircraft):
         m_prop = 1.83 * (133.8 + 0.1156 * power * 1e-3)
         m_drive = (0.00000166 * (0.9 * self.mtow) ** 2 
                    + 0.087780096 * self.mtow - 113.81241656)
-        m_tanks = 164.751 * np.log(self.fuel_mass / 2.948) - 751.33
+        m_tanks = 164.751 * np.log(fuel_mass / 2.948) - 751.33
         m_fcs = 95.6368 * np.exp(0.000111114 * self.mtow)
         m_i = 25.444 * np.log(power / 0.7457e3) - 141.62
         m_hyd = 0.003258 * self.mtow + 5.24
