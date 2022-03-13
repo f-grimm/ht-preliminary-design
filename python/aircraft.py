@@ -21,7 +21,7 @@ class Aircraft:
         self.power_available    = data['Engine'].get('Power available')
         self.accessory_power    = data['Engine'].get('Accessory power')
         self.sfc                = data['Engine'].get('SFC')
-        self.download_factor    = data['Fuselage'].get('Download factor')
+        self.download_factor    = data['Fuselage'].get('Download factor', 0)
         self.drag_area          = data['Fuselage'].get('Drag area')
         self.landing_gear_type  = data['Landing gear'].get('Type')
         self.number_of_legs     = data['Landing gear'].get('Number of legs')
@@ -37,7 +37,7 @@ class Aircraft:
         forward flight.
         """
         # Parasite power [W]
-        return (0.5 * density * flight_speed ** 3 * self.drag_area)
+        return 0.5 * density * flight_speed ** 3 * self.drag_area
 
 
     def get_climb_power(self, flight_speed, gamma):
@@ -47,14 +47,14 @@ class Aircraft:
         weight = self.mtow * self.gravity
 
         # Climb power [W]
-        return (weight * flight_speed * np.sin(gamma))
+        return weight * flight_speed * np.sin(gamma)
 
 
     def get_fuselage_drag(self, density, flight_speed):
         """ Calculate the fuselage drag.
         """
         # Fuselage drag [N]
-        return (0.5 * density * flight_speed ** 2 * self.drag_area)
+        return 0.5 * density * flight_speed ** 2 * self.drag_area
 
 
     def get_thrust(self, drag, alpha, gamma, advance_ratio):
@@ -70,8 +70,10 @@ class Aircraft:
         weight = self.mtow * self.gravity
         
         # Download factor
-        if abs(advance_ratio) > 0.5: k_DL = 0
-        else: k_DL = (1 - abs(advance_ratio) / 0.5) * self.download_factor
+        if abs(advance_ratio) < 0.5: 
+            k_DL = (1 - abs(advance_ratio) / 0.5) * self.download_factor
+        else: 
+            k_DL = 0
 
         # Thrust [N]
         return ((drag + weight * (np.sin(gamma) + np.cos(gamma))) 
@@ -86,7 +88,6 @@ class Aircraft:
 
         # Angle of attack [rad]
         return - np.arctan(
-            (drag + weight * np.sin(gamma)) 
-            / (weight * np.cos(gamma)))
+            (drag + weight * np.sin(gamma)) / (weight * np.cos(gamma)))
 
 
