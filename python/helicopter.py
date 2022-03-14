@@ -88,10 +88,11 @@ class Helicopter(Aircraft):
 
             # Plots
             mission.plot_mission()
-            self.plot_powers(mission.density, 80)
+            self.plot_power_curves(mission.density, 80)
             self.plot_mtow_convergence(mtow_list)
             self.plot_masses(masses)
             self.plot_empty_weight_comp(empty_weight_comp)
+            self.plot_powers(powers)
             plt.show()
 
 
@@ -163,9 +164,10 @@ class Helicopter(Aircraft):
         # Powers [W] and flight state [-, N, rad, N, m/s]
         return(
             {'total': total_power, 'msl': power_msl, 'induced': induced_power,
-             'profile': profile_power, 'tail rotor': tail_rotor_power,  
-             'climb': climb_power, 'transmission': transmission_losses, 
-             'parasite': parasite_power, 'accessory': self.accessory_power},
+             'profile': profile_power, 'climb': climb_power, 
+             'parasite': parasite_power, 'tail rotor': tail_rotor_power, 
+             'transmission': transmission_losses,
+             'accessory': self.accessory_power},
             {'advance ratio': advance_ratio, 'drag': drag, 'alpha': alpha, 
              'thrust': thrust, 'induced velocity': induced_velocity,
              'download factor': k_DL})
@@ -232,14 +234,28 @@ class Helicopter(Aircraft):
         # Empty weight components [kg]
         return {
             'main rotor': m_mr, 'tail rotor': m_tr, 'fuselage, tail': m_fus_t, 
-            'landing gear': m_lg, 'engines': m_prop, 'transmission': m_drive, 
+            'landing gear': m_lg, 'transmission': m_drive, 'engines': m_prop, 
             'fuel tanks': m_tanks, 'flight control systems': m_fcs, 
-            'instruments': m_i, 'hydraulic systems': m_hyd, 
-            'electrical systems': m_el, 'avionics': m_av, 'furnishing': m_furn, 
-            'air conditioning, anti-ice': m_ac_ai, 'loading, handling': m_l_h}
+            'hydraulic systems': m_hyd, 'avionics': m_av, 
+            'instruments': m_i, 'furnishing': m_furn, 
+            'air conditioning, anti-ice': m_ac_ai, 'loading, handling': m_l_h, 
+            'electrical systems': m_el}
 
 
-    def plot_powers(self, density, max_velocity):
+    def plot_mtow_convergence(self, mtow_list: list):
+        """ Plot MTOW over the iterations within the design loop.
+        """
+        # Figure, plot
+        fig, ax = plt.subplots(figsize=(8,5))
+        ax.set_title('MTOW convergence', fontweight='bold')
+        ax.plot(range(len(mtow_list)), mtow_list, 'k')
+        ax.set_xlabel('Iterations')
+        ax.set_ylabel('MTOW [kg]')
+        fig.tight_layout()
+        ax.grid()
+
+
+    def plot_power_curves(self, density, max_velocity):
         """ Plot powers over a range of horizontal flight speeds for the 
         current MTOW. Level flight approximation is applied.
         """
@@ -286,69 +302,82 @@ class Helicopter(Aircraft):
         ax.grid()
 
 
-    def plot_mtow_convergence(self, mtow_list: list):
-        """ Plot MTOW over the iterations within the design loop.
+    def plot_powers(self, powers: dict):
+        """ Plot power composition in the current flight state as a pie chart.
         """
+        # Data
+        labels, sizes = [], []
+        for name, P in powers.items():
+            if name not in {'total', 'msl'}:
+                if P > 0: 
+                    labels.append(name.capitalize())
+                    sizes.append(P)
+                else: 
+                    labels.append('')
+                    sizes.append(0)
+                
         # Figure, plot
-        fig, ax = plt.subplots(figsize=(8,5))
-        ax.set_title('MTOW convergence', fontweight='bold')
-        ax.plot(range(len(mtow_list)), mtow_list, 'k')
-        ax.set_xlabel('Iterations')
-        ax.set_ylabel('MTOW [kg]')
-        fig.tight_layout()
-        ax.grid()
+        fig, ax = plt.subplots(figsize=(5, 4))
+        ax.set_title('Total power', fontweight='bold', pad=15)
+        ax.set_prop_cycle('color', plt.cm.get_cmap('Set2').colors[1:])
+        ax.pie(
+            sizes, labels=labels, shadow=False, startangle=90, 
+            wedgeprops=dict(width=0.4), pctdistance=0.80,
+            autopct=lambda p:'{:.1f}%'.format(round(p)) if p > 0 else '')
+        ax.margins(0.2, 0.2)
+        ax.axis('equal')
 
 
     def plot_masses(self, masses: dict):
-        """ Plot mass composition (empty weight, fuel, crew, payload) in a pie 
+        """ Plot mass composition (empty weight, fuel, crew, payload) as a pie 
         chart.
         """
         # Data
-        labels = [name.capitalize() for name in masses.keys()]
-        sizes = masses.values()
+        labels, sizes = [], []
         explode = (0, 0, 0.2, 0)
+        for name, m in masses.items():
+            if m > 0:
+                labels.append(name.capitalize())
+                sizes.append(m)
+            else:
+                labels.append('')
+                sizes.append(0)
 
         # Figure, plot
         fig, ax = plt.subplots(figsize=(5, 4))
         ax.set_title('Maximum take-off weight', fontweight='bold', pad=15)
         ax.set_prop_cycle('color', plt.cm.get_cmap('Set2').colors)
         ax.pie(
-            sizes, explode=explode, labels=labels, autopct='%1.1f%%',
-            shadow=False, startangle=90, wedgeprops=dict(width=0.4),
-            pctdistance=0.80)
+            sizes, explode=explode, labels=labels, shadow=False, startangle=90, 
+            wedgeprops=dict(width=0.4), pctdistance=0.80,
+            autopct=lambda p:'{:.1f}%'.format(round(p)) if p > 0 else '')
         ax.margins(0.2, 0.2)
         ax.axis('equal')
 
 
     def plot_empty_weight_comp(self, empty_weight_comp: dict):
-        """ Plot empty weight components in a pie chart.
+        """ Plot empty weight components as a pie chart.
         """
         # Data
-        labels = list(empty_weight_comp.keys())
-        sizes = [m if m > 0 else 0 for m in empty_weight_comp.values()]
-        total = sum(sizes)
-        label_first_n = 6
-        for i in range(len(labels)):
-            labels[i] = (labels[i].capitalize() 
-                        + f' ({sizes[i] / total * 100:.1f}%)')
-
+        labels, sizes = [], []
+        for name, m in empty_weight_comp.items():
+            if m > 0:
+                labels.append(name.capitalize())
+                sizes.append(m)
+            else:
+                labels.append('')
+                sizes.append(0)
+        
         # Figure, plot
-        fig = plt.figure(figsize=(9.5, 4))
-        ax = fig.add_subplot(121)
+        fig, ax = plt.subplots(figsize=(7, 4.5))
         ax.set_title('Empty weight', fontweight='bold', pad=15)
         ax.set_prop_cycle(
             'color', plt.cm.get_cmap('Set3').colors 
             + plt.cm.get_cmap('Pastel1').colors)
-        pie = ax.pie(
-            sizes, labels=labels[:label_first_n] + [''] 
-            * (len(labels) - label_first_n), autopct=None, shadow=False, 
-            startangle=90, wedgeprops=dict(width=0.4), pctdistance=0.80)
-        ax2 = fig.add_subplot(122)
-        ax2.axis('off')
-        ax2.legend(
-            pie[0][:(label_first_n - 1):-1], labels[:(label_first_n - 1):-1], 
-            loc='center right')
-        plt.subplots_adjust(wspace=-0.2)
+        ax.pie(
+            sizes, labels=labels, shadow=False, startangle=90, 
+            wedgeprops=dict(width=0.4), pctdistance=0.80,
+            autopct=lambda p:'{:.1f}%'.format(round(p)) if p > 0 else '')
         ax.margins(0.2, 0.2)
         ax.axis('equal')
 
