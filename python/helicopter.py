@@ -6,6 +6,7 @@ Created on 2022-02-12
 """
 
 from aircraft import Aircraft
+from engines import Engines
 from mission import Mission
 from rotor import Rotor
 import yaml
@@ -28,15 +29,16 @@ class Helicopter(Aircraft):
         with open('data/configurations/' + filename + '.yaml') as file:
             data = yaml.safe_load(file)
 
-        # Add main and tail rotor
+        # Add main rotor, tail rotor, and engines
         self.main_rotor = Rotor(data['Main rotor'])
         self.tail_rotor = Rotor(data['Tail rotor'])
+        self.engines    = Engines(data['Engines'])
 
 
     def preliminary_design(self, mission: Mission, segment: int, logs=True):
         """
         """
-        # Set the mission segment as defined in _main
+        # Set the mission segment
         mission.set_mission_segment(segment)
         
         # Estimate MTOW
@@ -83,6 +85,7 @@ class Helicopter(Aircraft):
                 + f' - Induced velocity: '
                     + f'{flight_state["induced velocity"]:15.2f} m/s\n'
                 + f' - Total power: {(powers["total"] * 1e-3):20.2f} kW\n'
+                + f' - SFC: {powers["SFC"] * 1e3:28.2f} kg/kWh\n'
                 + f' - Empty weight: {masses["empty weight"]:19.2f} kg\n'
                 + f' - MTOW: {self.mtow:27.2f} kg\n')
 
@@ -98,9 +101,10 @@ class Helicopter(Aircraft):
 
     def initial_mtow_estimation(self, mission: Mission):
         """ Estimate the initial maximum take-off weight based on the mission 
-        profile; (SFC and empty weight ratio are constant). [pp.90-91]
+        profile. SFC and empty weight ratio are assumed constant. [pp.90-91]
         """
-        fuel_mass = self.sfc * self.power_available * mission.duration
+        fuel_mass = (self.engines.sfc * self.engines.power_available 
+                     * self.engines.number_of_engines * mission.duration)
         useful_load = fuel_mass + mission.payload + mission.crew_mass
 
         # MTOW [kg]
@@ -155,11 +159,18 @@ class Helicopter(Aircraft):
         total_power = (main_rotor_power + tail_rotor_power 
                        + transmission_losses + self.accessory_power)
 
-        # Engine requirement [p.298]
+        # Engine requirement at mean sea level [p.298]
         temperature_ratio = mission.temperature / 288.15
         pressure_ratio = mission.pressure / 101325
         power_msl = (total_power * np.sqrt(temperature_ratio) 
                      / pressure_ratio)
+
+        # Use power-dependent SFC if engine parameters A, B are provided
+        if self.engines.a is not None and self.engines.b is not None:
+            
+            # SFC [kg/Wh]
+            self.engines.sfc = self.engines.get_sfc(
+                temperature_ratio, pressure_ratio, total_power)
 
         # Powers [W] and flight state [-, N, rad, N, m/s]
         return(
@@ -167,7 +178,7 @@ class Helicopter(Aircraft):
              'profile': profile_power, 'climb': climb_power, 
              'parasite': parasite_power, 'tail rotor': tail_rotor_power, 
              'transmission': transmission_losses,
-             'accessory': self.accessory_power},
+             'accessory': self.accessory_power, 'SFC': self.engines.sfc},
             {'advance ratio': advance_ratio, 'drag': drag, 'alpha': alpha, 
              'thrust': thrust, 'induced velocity': induced_velocity,
              'download factor': k_DL})
@@ -177,7 +188,7 @@ class Helicopter(Aircraft):
         """ Determine the fuel mass, empty weight, and new maximum take-off 
         weight based on the required power [pp.324-325]
         """
-        fuel_mass = self.sfc * 1.1 * powers['total'] * mission.duration
+        fuel_mass = self.engines.sfc * 1.1 * powers['total'] * mission.duration
         empty_weight_comp = self.empty_weight_estimation(
             fuel_mass, power=powers['msl'])
         empty_weight = sum([m for m in empty_weight_comp.values() if m > 0])
@@ -308,7 +319,7 @@ class Helicopter(Aircraft):
         # Data
         labels, sizes = [], []
         for name, P in powers.items():
-            if name not in {'total', 'msl'}:
+            if name not in {'total', 'msl', 'SFC'}:
                 if P > 0: 
                     labels.append(name.capitalize())
                     sizes.append(P)
