@@ -15,7 +15,6 @@ class Rotor:
         # Get values from rotor data dict (default None, if key is unavailable)
         self.radius               = rotor_data.get('Radius')
         self.number_of_blades     = rotor_data.get('Number of blades')
-        self.chord                = rotor_data.get('Chord')
         self.solidity             = rotor_data.get('Solidity')
         self.kappa                = rotor_data.get('Kappa')
         self.zero_lift_drag_coeff = rotor_data.get('Zero-lift drag coeff.')
