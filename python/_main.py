@@ -18,6 +18,6 @@ concept = Helicopter('concept')
 mission = Mission('exercise_9') 
 
 # Start premilinary design
-concept.preliminary_design(mission, segment=4, logs=True)
+concept.preliminary_design(mission, segment=0, logs=True)
 
 
