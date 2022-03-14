@@ -91,7 +91,7 @@ class Helicopter(Aircraft):
             self.plot_power_curves(mission.density, 80)
             self.plot_mtow_convergence(mtow_list)
             self.plot_masses(masses)
-            self.plot_empty_weight_comp(empty_weight_comp)
+            self.plot_empty_weight(empty_weight_comp)
             self.plot_powers(powers)
             plt.show()
 
@@ -355,7 +355,7 @@ class Helicopter(Aircraft):
         ax.axis('equal')
 
 
-    def plot_empty_weight_comp(self, empty_weight_comp: dict):
+    def plot_empty_weight(self, empty_weight_comp: dict):
         """ Plot empty weight components as a pie chart.
         """
         # Data
