@@ -28,7 +28,7 @@ Fuselage:
 
 Landing gear:
 
-    Type: Rigid wheels
+    Type: Rigid wheels # [Skids,Retractable wheels,Rigid wheels]
     Number of legs: 2 # -
 
 Misc:
