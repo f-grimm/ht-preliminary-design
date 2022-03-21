@@ -60,13 +60,13 @@ class Aircraft:
         rad.
 
         Eq.:
-            T sin(-alpha) = D + W sin(gamma)   (1) +
-            T cos(-alpha) = W cos(gamma)       (2)
+            T sin(-alpha) = D cos(gamma)            (1) +
+            T cos(-alpha) = D sin(gamma) + W        (2)
         """
         weight = self.mtow * self.gravity
 
         # Thrust [N]
-        return ((drag + weight * (np.sin(gamma) + np.cos(gamma))) 
+        return ((weight + drag * (np.sin(gamma) + np.cos(gamma))) 
                 / (np.cos(alpha) - np.sin(alpha)))
 
 
@@ -91,6 +91,6 @@ class Aircraft:
 
         # Angle of attack [rad]
         return - np.arctan(
-            (drag + weight * np.sin(gamma)) / (weight * np.cos(gamma)))
+            drag * np.cos(gamma) / ( weight + drag * np.sin(gamma)))
 
 
