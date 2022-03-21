@@ -35,7 +35,8 @@ class Helicopter(Aircraft):
         self.engines    = Engines(data['Engines'])
 
 
-    def preliminary_design(self, mission: Mission, segment: int, logs=True):
+    def preliminary_design(self, mission: Mission, segment: int, logs=True,
+                           conv_tol = 1e-4):
         """
         """
         # Set the mission segment
@@ -49,7 +50,7 @@ class Helicopter(Aircraft):
         counter = 0
         error = 1
 
-        while error > 1e-4:
+        while error > conv_tol:
 
             # Sizing
             self.main_rotor_sizing(mission)
@@ -186,7 +187,7 @@ class Helicopter(Aircraft):
 
     def mass_estimation(self, powers: dict, mission: Mission):
         """ Determine the fuel mass, empty weight, and new maximum take-off 
-        weight based on the required power [pp.324-325]
+        weight based on the required power [pp.179]
         """
         fuel_mass = self.engines.sfc * 1.1 * powers['total'] * mission.duration
         empty_weight_comp = self.empty_weight_estimation(
